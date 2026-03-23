@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FoodTruth — Know What You Eat</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0c0c0e;
+  --surface: #141416;
+  --surface2: #1c1c1f;
+  --surface3: #242428;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --gold: #c9a84c;
+  --gold2: #e8c96a;
+  --gold-dim: rgba(201,168,76,0.12);
+  --red: #e05252;
+  --orange: #e07a30;
+  --green: #4caf7d;
+  --blue: #4c8fe0;
+  --text: #f0ede8;
+  --text2: #a09a90;
+  --text3: #5a554e;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --r: 16px; --r-sm: 10px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* PAGES */
+.page{display:none;min-height:100vh;}
+.page.active{display:block;}
+
+/* ── LANDING ── */
+#page-landing{background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,168,76,0.08) 0%,transparent 70%),var(--bg);}
+#page-landing.active{display:flex;flex-direction:column;}
+.landing-nav{padding:24px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.logo{font-family:var(--font-display);font-size:1.3rem;letter-spacing:.5px;}
+.logo em{font-style:normal;color:var(--gold);}
+.nav-btn{padding:9px 20px;border-radius:30px;font-size:.82rem;font-family:var(--font-body);font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.3px;}
+.nav-btn-ghost{background:none;border:1px solid var(--border2);color:var(--text2);}
+.nav-btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.nav-btn-gold{background:var(--gold);border:1px solid var(--gold);color:#0c0c0e;}
+.nav-btn-gold:hover{background:var(--gold2);}
+.landing-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px 40px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.06);padding:6px 16px;border-radius:30px;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:32px;font-family:var(--font-body);font-weight:500;}
+.hero-eyebrow span{width:5px;height:5px;background:var(--gold);border-radius:50%;}
+.landing-hero h1{font-family:var(--font-display);font-size:clamp(2.4rem,7vw,5rem);font-weight:700;line-height:1.08;letter-spacing:-1px;margin-bottom:24px;max-width:700px;}
+.landing-hero h1 .accent{color:var(--gold);font-style:italic;}
+.landing-hero p{color:var(--text2);font-size:1rem;font-weight:300;max-width:440px;line-height:1.75;margin-bottom:40px;}
+.hero-cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:64px;}
+.cta-primary{padding:14px 32px;background:var(--gold);color:#0c0c0e;border:none;border-radius:30px;font-family:var(--font-body);font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s;}
+.cta-primary:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 30px rgba(201,168,76,.25);}
+.cta-secondary{padding:14px 32px;background:none;color:var(--text);border:1px solid var(--border2);border-radius:30px;font-family:var(--font-body);font-size:.9rem;font-weight:400;cursor:pointer;transition:all .2s;}
+.cta-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.features-row{display:flex;gap:1px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;max-width:600px;width:100%;}
+.feature-item{flex:1;padding:20px 16px;text-align:center;background:var(--surface);}
+.feature-item:not(:last-child){border-right:1px solid var(--border);}
+.feature-icon{font-size:1.4rem;margin-bottom:8px;display:block;}
+.feature-label{font-size:.75rem;color:var(--text2);font-weight:400;line-height:1.4;}
+
+/* ── APP PAGE ── */
+#page-app{display:none;max-width:640px;margin:0 auto;padding:0 16px 80px;}
+#page-app.active{display:block;}
+.app-header{position:sticky;top:0;z-index:100;background:rgba(12,12,14,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);margin:0 -16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.app-logo{font-family:var(--font-display);font-size:1.1rem;}
+.app-logo em{font-style:normal;color:var(--gold);}
+.header-actions{display:flex;gap:8px;}
+.icon-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold);}
+.icon-btn.active-btn{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+
+/* ── PROFILE MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:var(--surface);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:640px;animation:slideUp .3s ease;max-height:90vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 24px;}
+.modal-title{font-family:var(--font-display);font-size:1.3rem;margin-bottom:6px;}
+.modal-sub{font-size:.83rem;color:var(--text2);margin-bottom:24px;line-height:1.5;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.profile-field{display:flex;flex-direction:column;gap:6px;}
+.profile-field label{font-size:.75rem;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;}
+.profile-input{padding:11px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;width:100%;}
+.profile-input:focus{border-color:var(--gold);}
+.profile-input option{background:var(--surface2);}
+.profile-field-full{grid-column:1/-1;}
+.allergy-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.allergy-tag{padding:6px 14px;border-radius:20px;font-size:.78rem;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--font-body);}
+.allergy-tag.selected{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold);}
+.btn-save-profile{width:100%;padding:14px;background:var(--gold);color:#0c0c0e;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:.9rem;font-weight:500;cursor:pointer;margin-top:20px;transition:all .2s;}
+.btn-save-profile:hover{background:var(--gold2);}
+
+/* ── INPUT SECTION ── */
+.input-section{padding:24px 0 0;}
+.section-label{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:16px;font-weight:500;}
+.input-tabs{display:flex;gap:6px;margin-bottom:16px;}
+.itab{flex:1;padding:10px 8px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--border);color:var(--text2);font-family:var(--font-body);font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.itab .itab-icon{font-size:1.1rem;}
+.itab.active{background:var(--gold-dim);border-color:rgba(201,168,76,.4);color:var(--gold);}
+.text-input-wrap{position:relative;margin-bottom:12px;}
+.food-text-input{width:100%;padding:16px 56px 16px 18px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font-body);font-size:.95rem;outline:none;transition:border-color .2s;}
+.food-text-input:focus{border-color:var(--gold);}
+.food-text-input::placeholder{color:var(--text3);}
+.text-input-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none;}
+.quick-searches{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
+.qs-pill{padding:6px 12px;border-radius:20px;font-size:.78rem;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--font-body);}
+.qs-pill:hover{border-color:var(--gold);color:var(--gold);}
+
+/* CACHE BADGE */
+.cache-badge{display:none;align-items:center;gap:6px;background:rgba(76,175,125,.08);border:1px solid rgba(76,175,125,.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:.78rem;color:#5aba8a;}
+.cache-badge.show{display:flex;}
+.cache-badge button{margin-left:auto;background:none;border:none;color:var(--text3);font-size:.72rem;cursor:pointer;font-family:var(--font-body);text-decoration:underline;}
+.cache-badge button:hover{color:var(--text2);}
+
+/* PHOTO UPLOAD */
+.drop-area{border:1px dashed var(--border2);border-radius:var(--r);padding:40px 20px;text-align:center;cursor:pointer;transition:all .25s;background:var(--surface);position:relative;overflow:hidden;}
+.drop-area::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(201,168,76,.04) 0%,transparent 70%);}
+.drop-area:hover,.drop-area.dragover{border-color:var(--gold);background:var(--surface2);}
+.drop-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.drop-icon{font-size:2.4rem;margin-bottom:10px;display:block;}
+.drop-area h3{font-family:var(--font-display);font-size:1rem;margin-bottom:4px;}
+.drop-area p{color:var(--text2);font-size:.82rem;}
+
+/* iOS CAMERA FIX — separate visible button */
+.mobile-camera-btn{display:none;width:100%;padding:13px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text2);font-family:var(--font-body);font-size:.88rem;cursor:pointer;margin-top:10px;transition:all .2s;position:relative;overflow:hidden;}
+.mobile-camera-btn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.mobile-camera-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+#preview-box{display:none;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);position:relative;margin-bottom:16px;}
+#preview-img{width:100%;max-height:240px;object-fit:cover;display:block;}
+.preview-bar{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.8));padding:20px 14px 12px;display:flex;align-items:center;justify-content:space-between;}
+.preview-name{font-size:.78rem;color:#ccc;}
+.btn-change-img{font-size:.72rem;color:var(--gold);background:none;border:1px solid rgba(201,168,76,.4);padding:4px 10px;border-radius:6px;cursor:pointer;font-family:var(--font-body);}
+
+/* ANALYZE BTN */
+.btn-analyze{width:100%;padding:16px;background:var(--gold);color:#0c0c0e;border:none;border-radius:var(--r);font-family:var(--font-display);font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.3px;margin-bottom:32px;}
+.btn-analyze:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 32px rgba(201,168,76,.2);}
+.btn-analyze:disabled{background:var(--surface3);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* LOADING */
+#loading{display:none;padding:60px 0;text-align:center;}
+.loading-orb{width:56px;height:56px;margin:0 auto 24px;position:relative;}
+.loading-orb::before,.loading-orb::after{content:'';position:absolute;border-radius:50%;}
+.loading-orb::before{inset:0;border:2px solid var(--surface3);}
+.loading-orb::after{inset:0;border:2px solid transparent;border-top-color:var(--gold);animation:spin .9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-steps-list{display:flex;flex-direction:column;gap:7px;max-width:260px;margin:16px auto 0;}
+.loading-step{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--text3);padding:8px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--border);transition:all .35s;}
+.loading-step.active{color:var(--text);border-color:rgba(201,168,76,.3);background:var(--gold-dim);}
+.loading-step .sdot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0;transition:all .35s;}
+.loading-step.active .sdot{background:var(--gold);}
+
+/* RESULTS */
+#results{display:none;}
+.result-header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.result-food-name{font-family:var(--font-display);font-size:1.6rem;font-weight:700;margin-bottom:8px;}
+.result-summary{font-size:.88rem;color:var(--text2);line-height:1.6;max-width:400px;margin:0 auto 20px;}
+.score-display{display:flex;align-items:center;justify-content:center;gap:20px;}
+.score-ring-wrap{position:relative;width:96px;height:96px;}
+.score-ring-wrap svg{transform:rotate(-90deg);}
+.score-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-display);}
+.score-big{font-size:1.8rem;font-weight:700;line-height:1;}
+.score-denom{font-size:.6rem;color:var(--text3);margin-top:1px;}
+.score-labels{text-align:left;}
+.verdict-tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;font-family:var(--font-body);}
+.score-tip{font-size:.82rem;color:var(--text2);max-width:200px;line-height:1.5;}
+
+/* SCORE BREAKDOWN — the new feature */
+.breakdown-wrap{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+.breakdown-title{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;text-align:center;}
+.breakdown-items{display:flex;flex-direction:column;gap:8px;}
+.breakdown-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--r-sm);border:1px solid var(--border);}
+.bi-icon{font-size:1rem;flex-shrink:0;width:24px;text-align:center;}
+.bi-label{flex:1;font-size:.82rem;color:var(--text2);}
+.bi-score{font-family:var(--font-display);font-size:.9rem;font-weight:700;flex-shrink:0;min-width:48px;text-align:right;}
+.bi-bar-wrap{width:80px;flex-shrink:0;}
+.bi-bar-track{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;}
+.bi-bar-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+.breakdown-total{display:flex;justify-content:space-between;padding:10px 12px;background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);border-radius:var(--r-sm);margin-top:8px;}
+.breakdown-total span:first-child{font-size:.82rem;color:var(--gold);}
+.breakdown-total span:last-child{font-family:var(--font-display);font-size:.9rem;font-weight:700;color:var(--gold);}
+
+/* RESULT CARDS */
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;overflow:hidden;}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.card-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
+.card-title{font-family:var(--font-display);font-size:.95rem;font-weight:500;}
+.card-sub{font-size:.72rem;color:var(--text2);margin-top:1px;}
+.nutrient-row{margin-bottom:12px;}
+.nutrient-row:last-child{margin-bottom:0;}
+.nutrient-label{display:flex;justify-content:space-between;margin-bottom:5px;}
+.nutrient-name{font-size:.82rem;color:var(--text2);}
+.nutrient-status{font-size:.75rem;font-weight:500;}
+.bar-track{height:5px;background:var(--surface3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.ing-grid{display:flex;flex-wrap:wrap;gap:7px;}
+.ing-pill{padding:5px 11px;border-radius:8px;font-size:.77rem;font-weight:400;border:1px solid;}
+.danger{background:rgba(224,82,82,.08);border-color:rgba(224,82,82,.25);color:#e07070;}
+.warning{background:rgba(224,122,48,.08);border-color:rgba(224,122,48,.25);color:#e09060;}
+.ok{background:rgba(76,175,125,.08);border-color:rgba(76,175,125,.25);color:#5aba8a;}
+.legend-row{display:flex;gap:14px;margin-top:10px;}
+.legend-row span{font-size:.72rem;color:var(--text3);}
+.harm-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.harm-item:last-child{border-bottom:none;}
+.harm-em{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.harm-title{font-size:.88rem;font-weight:500;margin-bottom:3px;color:var(--text);}
+.harm-desc{font-size:.8rem;color:var(--text2);line-height:1.55;}
+.lie-card{background:rgba(224,82,82,.04);border:1px solid rgba(224,82,82,.12);border-radius:var(--r-sm);padding:14px;margin-bottom:9px;}
+.lie-claim{font-size:.8rem;color:#e07070;font-style:italic;margin-bottom:6px;}
+.lie-truth{font-size:.82rem;color:var(--text2);line-height:1.5;}
+.alt-item{display:flex;align-items:center;gap:14px;padding:13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:9px;transition:border-color .15s;}
+.alt-item:last-child{margin-bottom:0;}
+.alt-item:hover{border-color:rgba(201,168,76,.3);}
+.alt-emoji{font-size:1.8rem;flex-shrink:0;}
+.alt-info{flex:1;}
+.alt-name{font-size:.9rem;font-weight:500;margin-bottom:2px;}
+.alt-desc{font-size:.78rem;color:var(--text2);line-height:1.4;}
+.alt-score{font-family:var(--font-display);font-size:.88rem;font-weight:700;padding:4px 10px;border-radius:8px;background:rgba(76,175,125,.1);color:#4caf7d;flex-shrink:0;}
+.personal-box{background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);border-radius:var(--r-sm);padding:14px;}
+.personal-title{font-size:.78rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.personal-text{font-size:.85rem;color:var(--text);line-height:1.6;}
+.rec-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.83rem;color:var(--text2);line-height:1.5;}
+.rec-item:last-child{border-bottom:none;}
+.rec-dot{color:var(--gold);flex-shrink:0;margin-top:2px;}
+
+/* DISCLAIMER */
+.disclaimer-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;margin-top:12px;display:flex;gap:10px;align-items:flex-start;}
+.disclaimer-icon{font-size:.9rem;flex-shrink:0;margin-top:1px;}
+.disclaimer-text{font-size:.75rem;color:var(--text3);line-height:1.5;}
+.disclaimer-text strong{color:var(--text2);}
+
+/* SHARE */
+.share-bar{display:flex;gap:8px;margin-bottom:12px;}
+.share-btn{flex:1;padding:11px 6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text2);font-family:var(--font-body);font-size:.75rem;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.share-btn:hover{border-color:var(--gold);color:var(--gold);}
+.btn-retry{width:100%;padding:13px;background:none;color:var(--text2);border:1px solid var(--border);border-radius:var(--r);font-family:var(--font-body);font-size:.9rem;cursor:pointer;margin-top:16px;transition:all .15s;}
+.btn-retry:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── HISTORY PAGE ── */
+#page-history{display:none;max-width:640px;margin:0 auto;padding:0 16px 80px;}
+#page-history.active{display:block;}
+.history-header{padding:24px 0 20px;display:flex;align-items:center;gap:12px;}
+.back-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .15s;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
+.history-title{font-family:var(--font-display);font-size:1.3rem;}
+
+/* WEEKLY SUMMARY CARD */
+.weekly-summary{background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);border-radius:var(--r);padding:18px;margin-bottom:20px;}
+.ws-title{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.ws-stats{display:flex;gap:12px;margin-bottom:14px;}
+.ws-stat{flex:1;text-align:center;background:rgba(0,0,0,.2);border-radius:var(--r-sm);padding:12px 8px;}
+.ws-stat .wsn{font-family:var(--font-display);font-size:1.4rem;font-weight:700;line-height:1;}
+.ws-stat .wsl{font-size:.7rem;color:var(--text2);margin-top:4px;}
+.ws-insight{font-size:.82rem;color:var(--text);line-height:1.6;padding:10px 12px;background:rgba(0,0,0,.2);border-radius:var(--r-sm);}
+
+.history-empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:.9rem;line-height:1.6;}
+.history-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s;}
+.history-item:hover{border-color:var(--border2);transform:translateX(2px);}
+.h-score{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1rem;font-weight:700;}
+.h-info{flex:1;min-width:0;}
+.h-name{font-size:.9rem;font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.h-meta{font-size:.75rem;color:var(--text3);}
+.h-verdict{font-size:.72rem;padding:3px 9px;border-radius:20px;flex-shrink:0;}
+.h-arrow{color:var(--text3);font-size:.9rem;flex-shrink:0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border2);color:var(--text);font-size:.82rem;padding:10px 20px;border-radius:30px;transition:transform .3s;z-index:9999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ANIMS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .4s ease forwards;}
+.d1{animation-delay:.04s;opacity:0}.d2{animation-delay:.1s;opacity:0}.d3{animation-delay:.17s;opacity:0}
+.d4{animation-delay:.24s;opacity:0}.d5{animation-delay:.31s;opacity:0}.d6{animation-delay:.38s;opacity:0}
+.d7{animation-delay:.45s;opacity:0}.d8{animation-delay:.52s;opacity:0}.d9{animation-delay:.59s;opacity:0}
+
+@media(max-width:480px){
+  .landing-hero h1{letter-spacing:-.5px;}
+  .features-row{flex-direction:column;}
+  .features-row .feature-item{border-right:none!important;border-bottom:1px solid var(--border);}
+  .score-display{flex-direction:column;gap:12px;}
+  .score-labels{text-align:center;}
+  .mobile-camera-btn{display:block;}
+  .ws-stats{gap:8px;}
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- ══ LANDING ══ -->
+<div class="page" id="page-landing">
+  <nav class="landing-nav">
+    <div class="logo">Food<em>Truth</em></div>
+    <div style="display:flex;gap:8px">
+      <button class="nav-btn nav-btn-ghost" onclick="goToApp()">Sign in</button>
+      <button class="nav-btn nav-btn-gold" onclick="goToApp()">Try for free</button>
+    </div>
+  </nav>
+  <div class="landing-hero">
+    <div class="hero-eyebrow"><span></span> AI-Powered Food Intelligence <span></span></div>
+    <h1>The truth about<br/>what you <span class="accent">eat</span></h1>
+    <p>Upload a photo, scan a barcode, or type a food name. FoodTruth uses AI to expose misleading claims and give you an honest health score — in seconds.</p>
+    <div class="hero-cta-row">
+      <button class="cta-primary" onclick="goToApp()">Analyze your food →</button>
+      <button class="cta-secondary" onclick="goToApp()">See how it works</button>
+    </div>
+    <div class="features-row">
+      <div class="feature-item"><span class="feature-icon">📸</span><div class="feature-label">Photo & text analysis</div></div>
+      <div class="feature-item"><span class="feature-icon">🔬</span><div class="feature-label">Score breakdown</div></div>
+      <div class="feature-item"><span class="feature-icon">🚨</span><div class="feature-label">Exposes misleading claims</div></div>
+      <div class="feature-item"><span class="feature-icon">📊</span><div class="feature-label">Weekly health summary</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div class="page" id="page-app">
+  <div class="app-header">
+    <div class="app-logo">Food<em>Truth</em></div>
+    <div class="header-actions">
+      <button class="icon-btn" id="profile-btn" onclick="openProfile()" title="Health Profile">👤</button>
+      <button class="icon-btn" onclick="goToHistory()" title="History">🕐</button>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <div class="section-label">Analyze a food</div>
+    <div class="input-tabs">
+      <button class="itab active" id="itab-text" onclick="switchInput('text')"><span class="itab-icon">✏️</span>Type name</button>
+      <button class="itab" id="itab-photo" onclick="switchInput('photo')"><span class="itab-icon">📸</span>Upload photo</button>
+    </div>
+
+    <!-- TEXT -->
+    <div id="input-text">
+      <div class="cache-badge" id="cache-badge">
+        ✓ Showing cached result — consistent every time
+        <button onclick="forceRefresh()">Re-analyze fresh</button>
+      </div>
+      <div class="text-input-wrap">
+        <input class="food-text-input" id="food-name-input" type="text"
+          placeholder="e.g. Maggi noodles, Oreo biscuits, Rooh Afza…"
+          oninput="onTextInput()" onkeydown="if(event.key==='Enter')analyzeFood()"/>
+        <span class="text-input-icon">🍽️</span>
+      </div>
+      <div class="quick-searches">
+        <span class="qs-pill" onclick="quickSearch('Maggi noodles')">Maggi noodles</span>
+        <span class="qs-pill" onclick="quickSearch('Rooh Afza')">Rooh Afza</span>
+        <span class="qs-pill" onclick="quickSearch('Lays chips')">Lays chips</span>
+        <span class="qs-pill" onclick="quickSearch('Dairy Milk chocolate')">Dairy Milk</span>
+        <span class="qs-pill" onclick="quickSearch('Parle-G biscuits')">Parle-G</span>
+        <span class="qs-pill" onclick="quickSearch('Red Bull energy drink')">Red Bull</span>
+        <span class="qs-pill" onclick="quickSearch('Appy')">Appy Fizz</span>
+      </div>
+    </div>
+
+    <!-- PHOTO -->
+    <div id="input-photo" style="display:none">
+      <div class="drop-area" id="drop-area">
+        <input type="file" id="file-input" accept="image/*"/>
+        <span class="drop-icon">🍱</span>
+        <h3>Drop a food photo</h3>
+        <p>Drag & drop or tap to browse your gallery</p>
+      </div>
+      <!-- iOS FIX: separate camera capture button -->
+      <button class="mobile-camera-btn" id="mobile-cam-btn">
+        📷 Take a photo with camera
+        <input type="file" accept="image/*" capture="environment" onchange="handleCaptureFile(this)"/>
+      </button>
+      <div id="preview-box">
+        <img id="preview-img" src="" alt=""/>
+        <div class="preview-bar">
+          <span class="preview-name" id="preview-name"></span>
+          <button class="btn-change-img" onclick="resetPhoto()">Change</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-analyze" id="analyze-btn" onclick="analyzeFood()" disabled>Analyze This Food</button>
+
+  <div id="loading">
+    <div class="loading-orb"></div>
+    <div class="loading-steps-list">
+      <div class="loading-step active" id="ls1"><span class="sdot"></span>Reading ingredients</div>
+      <div class="loading-step" id="ls2"><span class="sdot"></span>Checking health impact</div>
+      <div class="loading-step" id="ls3"><span class="sdot"></span>Detecting misleading claims</div>
+      <div class="loading-step" id="ls4"><span class="sdot"></span>Calculating score breakdown</div>
+      <div class="loading-step" id="ls5"><span class="sdot"></span>Personalizing for you</div>
+    </div>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<!-- ══ HISTORY ══ -->
+<div class="page" id="page-history">
+  <div class="history-header">
+    <button class="back-btn" onclick="goToApp()">←</button>
+    <div class="history-title">Your History</div>
+  </div>
+  <div id="weekly-summary-wrap"></div>
+  <div id="history-list"></div>
+</div>
+
+<!-- ══ PROFILE MODAL ══ -->
+<div class="modal-overlay" id="profile-modal" onclick="closeProfileOnBg(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Health Profile</div>
+    <div class="modal-sub">Set your profile so FoodTruth can give you personalized advice based on your body and health goals.</div>
+    <div class="profile-grid">
+      <div class="profile-field"><label>Age</label><input class="profile-input" id="p-age" type="number" placeholder="e.g. 21" min="1" max="100"/></div>
+      <div class="profile-field"><label>Gender</label>
+        <select class="profile-input" id="p-gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+      </div>
+      <div class="profile-field"><label>Weight (kg)</label><input class="profile-input" id="p-weight" type="number" placeholder="e.g. 65"/></div>
+      <div class="profile-field"><label>Health Goal</label>
+        <select class="profile-input" id="p-goal"><option value="">Select</option><option>Lose weight</option><option>Build muscle</option><option>Stay healthy</option><option>Manage diabetes</option><option>Heart health</option></select>
+      </div>
+      <div class="profile-field profile-field-full">
+        <label>Allergies / Conditions</label>
+        <div class="allergy-grid" id="allergy-grid">
+          <span class="allergy-tag" onclick="toggleAllergy(this)">Gluten</span>
+          <span class="allergy-tag" onclick="toggleAllergy(this)">Dairy</span>
+          <span class="allergy-tag" onclick="toggleAllergy(this)">Nuts</span>
+          <span class="allergy-tag" onclick="toggleAllergy(this)">Soy</span>
+          <span class="allergy-tag" onclick="toggleAllergy(this)">Diabetes</span>
+          <span class="allergy-tag" onclick="toggleAllergy(this)">High BP</span>
+          <span class="allergy-tag" onclick="toggleAllergy(this)">PCOD</span>
+          <span class="allergy-tag" onclick="toggleAllergy(this)">Thyroid</span>
+        </div>
+      </div>
+    </div>
+    <button class="btn-save-profile" onclick="saveProfile()">Save Profile</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────
+let currentPage = 'landing';
+let uploadedBase64 = null;
+let inputMode = 'text';
+let userProfile = JSON.parse(localStorage.getItem('ft_profile') || 'null');
+let history = JSON.parse(localStorage.getItem('ft_history') || '[]');
+let cache = JSON.parse(localStorage.getItem('ft_cache') || '{}');
+let lastResult = null;
+let forceRefreshNext = false;
+let loadingInterval;
+
+const loadingSteps = ['ls1','ls2','ls3','ls4','ls5'];
+let currentStep = 0;
+
+// ── NAVIGATION ─────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  currentPage = id;
+  window.scrollTo(0,0);
+}
+function goToApp() { showPage('app'); }
+function goToHistory() { renderHistory(); showPage('history'); }
+
+// ── INPUT TABS ──────────────────────────────────────
+function switchInput(mode) {
+  inputMode = mode;
+  document.querySelectorAll('.itab').forEach(t => t.classList.remove('active'));
+  document.getElementById('itab-' + mode).classList.add('active');
+  document.getElementById('input-text').style.display = mode==='text' ? 'block' : 'none';
+  document.getElementById('input-photo').style.display = mode==='photo' ? 'block' : 'none';
+  checkReady();
+}
+
+function onTextInput() {
+  forceRefreshNext = false;
+  const name = document.getElementById('food-name-input').value.trim().toLowerCase();
+  const isCached = cache[name] !== undefined;
+  document.getElementById('cache-badge').classList.toggle('show', isCached && !forceRefreshNext);
+  checkReady();
+}
+
+function quickSearch(name) {
+  document.getElementById('food-name-input').value = name;
+  onTextInput();
+}
+
+function forceRefresh() {
+  forceRefreshNext = true;
+  document.getElementById('cache-badge').classList.remove('show');
+  showToast('Will re-analyze fresh this time');
+}
+
+function checkReady() {
+  const textReady = inputMode==='text' && document.getElementById('food-name-input').value.trim().length > 1;
+  const photoReady = inputMode==='photo' && uploadedBase64;
+  document.getElementById('analyze-btn').disabled = !(textReady || photoReady);
+}
+
+// ── FILE / CAMERA ───────────────────────────────────
+const dropArea = document.getElementById('drop-area');
+const fileInput = document.getElementById('file-input');
+dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragover'); });
+dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.classList.remove('dragover'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => { if(fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+// iOS camera fix handler
+function handleCaptureFile(input) {
+  if(input.files && input.files[0]) handleFile(input.files[0]);
+}
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    uploadedBase64 = e.target.result.split(',')[1];
+    document.getElementById('preview-img').src = e.target.result;
+    document.getElementById('preview-name').textContent = file.name;
+    document.getElementById('preview-box').style.display = 'block';
+    dropArea.style.display = 'none';
+    document.getElementById('mobile-cam-btn').style.display = 'none';
+    checkReady();
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetPhoto() {
+  uploadedBase64 = null;
+  document.getElementById('preview-box').style.display = 'none';
+  dropArea.style.display = 'block';
+  document.getElementById('mobile-cam-btn').style.display = '';
+  fileInput.value = '';
+  checkReady();
+}
+
+// ── PROFILE ─────────────────────────────────────────
+function openProfile() {
+  if(userProfile) {
+    document.getElementById('p-age').value = userProfile.age || '';
+    document.getElementById('p-weight').value = userProfile.weight || '';
+    document.getElementById('p-gender').value = userProfile.gender || '';
+    document.getElementById('p-goal').value = userProfile.goal || '';
+    document.querySelectorAll('.allergy-tag').forEach(t =>
+      t.classList.toggle('selected', (userProfile.allergies||[]).includes(t.textContent)));
+  }
+  document.getElementById('profile-modal').classList.add('open');
+}
+function closeProfileOnBg(e) { if(e.target===document.getElementById('profile-modal')) closeProfile(); }
+function closeProfile() { document.getElementById('profile-modal').classList.remove('open'); }
+function toggleAllergy(el) { el.classList.toggle('selected'); }
+function saveProfile() {
+  const allergies = [...document.querySelectorAll('.allergy-tag.selected')].map(t => t.textContent);
+  userProfile = {
+    age: document.getElementById('p-age').value,
+    weight: document.getElementById('p-weight').value,
+    gender: document.getElementById('p-gender').value,
+    goal: document.getElementById('p-goal').value,
+    allergies
+  };
+  localStorage.setItem('ft_profile', JSON.stringify(userProfile));
+  document.getElementById('profile-btn').classList.add('active-btn');
+  closeProfile();
+  showToast('✓ Profile saved — results will be personalized!');
+}
+
+// ── LOADING STEPS ───────────────────────────────────
+function startLoading() {
+  currentStep = 0;
+  loadingSteps.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById('ls1').classList.add('active');
+  loadingInterval = setInterval(() => {
+    document.getElementById(loadingSteps[currentStep]).classList.remove('active');
+    currentStep = Math.min(currentStep + 1, loadingSteps.length - 1);
+    document.getElementById(loadingSteps[currentStep]).classList.add('active');
+  }, 1000);
+}
+function stopLoading() { clearInterval(loadingInterval); }
+
+// ── FOOD NAME EXPANDER ──────────────────────────────
+// Fixes the "Maggi" timeout bug — short brand names get expanded
+// so the AI knows exactly what product to analyze
+const foodNameMap = {
+  'maggi': 'Maggi 2-Minute Instant Noodles',
+  'lays': 'Lays Classic Salted Potato Chips',
+  'kurkure': 'Kurkure Masala Munch snack',
+  'oreo': 'Oreo chocolate sandwich biscuits',
+  'dairy milk': 'Cadbury Dairy Milk chocolate bar',
+  'kitkat': 'KitKat chocolate wafer bar',
+  'parle-g': 'Parle-G glucose biscuits',
+  'parle g': 'Parle-G glucose biscuits',
+  'rooh afza': 'Rooh Afza concentrated sharbat drink by Hamdard',
+  'bournvita': 'Cadbury Bournvita chocolate malt drink powder',
+  'horlicks': 'Horlicks malted milk health drink',
+  'red bull': 'Red Bull energy drink',
+  'frooti': 'Frooti mango fruit drink by Parle Agro',
+  'appy': 'Appy Fizz apple sparkling drink',
+  'thums up': 'Thums Up carbonated cola drink',
+  'pepsi': 'Pepsi Cola carbonated soft drink',
+  'coca cola': 'Coca Cola carbonated soft drink',
+  'coke': 'Coca Cola carbonated soft drink',
+  'sprite': 'Sprite lemon-lime carbonated soft drink',
+  'hide&seek': 'Hide & Seek chocolate chip cookies by Parle',
+  'bourbon': 'Britannia Bourbon chocolate cream biscuits',
+  'good day': 'Britannia Good Day cashew butter cookies',
+  'marie': 'Britannia Marie Gold tea biscuits',
+  'monaco': 'Parle Monaco salted crackers',
+  'sunfeast': 'Sunfeast pasta or biscuit product',
+  'britannia': 'Britannia biscuits or bread product',
+  'patanjali': 'Patanjali packaged food product',
+  'haldirams': "Haldiram's namkeen snack",
+  'haldiram': "Haldiram's namkeen snack",
+};
+
+function expandFoodName(name) {
+  const lower = name.toLowerCase().trim();
+  // Direct match
+  if(foodNameMap[lower]) return foodNameMap[lower];
+  // Partial match — if typed name is 1-2 words and under 12 chars, try to expand
+  const words = lower.split(' ');
+  if(words.length <= 2 && lower.length < 12) {
+    for(const key of Object.keys(foodNameMap)) {
+      if(key.startsWith(lower) || lower.startsWith(key.split(' ')[0])) {
+        return foodNameMap[key];
+      }
+    }
+    // Still short — add "packaged Indian food product" context so AI doesn't get confused
+    if(lower.length < 8) return `${name} Indian packaged food product`;
+  }
+  return name; // already specific enough
+}
+
+// ── ANALYZE ─────────────────────────────────────────
+async function analyzeFood() {
+  const rawInput = document.getElementById('food-name-input').value.trim();
+  const foodName = expandFoodName(rawInput); // expanded for AI clarity
+  const cacheKey = rawInput.toLowerCase();  // cache by what user typed
+
+  // CHECK CACHE FIRST (skip if photo mode or force refresh)
+  if(inputMode==='text' && !forceRefreshNext && cache[cacheKey]) {
+    renderResults(cache[cacheKey], true);
+    return;
+  }
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('analyze-btn').disabled = true;
+  document.getElementById('cache-badge').classList.remove('show');
+  forceRefreshNext = false;
+  startLoading();
+
+  const profileStr = userProfile
+    ? `User profile: Age ${userProfile.age}, Gender ${userProfile.gender}, Weight ${userProfile.weight}kg, Goal: ${userProfile.goal}, Conditions/Allergies: ${(userProfile.allergies||[]).join(', ')||'none'}.`
+    : 'No user profile.';
+
+  const prompt = `You are FoodTruth — brutally honest food health analyst. ${profileStr}
+
+Respond ONLY with valid JSON, no markdown, no backticks, no extra text.
+
+{
+  "food_name": "string",
+  "health_score": 5,
+  "score_color": "orange",
+  "verdict": "string",
+  "summary": "One sentence honest summary",
+  "score_breakdown": [
+    {"icon": "🍬", "label": "High sugar content", "impact": -2.5, "type": "negative"},
+    {"icon": "🎨", "label": "Artificial colours", "impact": -1.0, "type": "negative"},
+    {"icon": "🌾", "label": "Some dietary fibre", "impact": +0.5, "type": "positive"},
+    {"icon": "⚗️", "label": "Preservatives present", "impact": -1.0, "type": "negative"},
+    {"icon": "🧂", "label": "High sodium", "impact": -1.0, "type": "negative"}
+  ],
+  "personalized_insight": "string — specific to user profile, or general tip if no profile",
+  "nutrients": [
+    {"name": "Sugar", "level": 85, "status": "danger"},
+    {"name": "Protein", "level": 20, "status": "ok"},
+    {"name": "Fibre", "level": 10, "status": "warning"},
+    {"name": "Fat", "level": 45, "status": "warning"},
+    {"name": "Sodium", "level": 60, "status": "warning"}
+  ],
+  "ingredients": [{"name": "string", "risk": "danger"}],
+  "harmful_effects": [{"icon": "🩸", "title": "string", "description": "string"}],
+  "misleading_claims": [{"claim": "string", "truth": "string"}],
+  "alternatives": [
+    {"emoji": "🍜", "brand": "Patanjali", "name": "Patanjali Atta Noodles", "reason": "Made with whole wheat atta, lower maida content, no MSG", "where": "Available at Patanjali stores and most kirana shops", "score": 6},
+    {"emoji": "🌾", "brand": "Bambino", "name": "Bambino Vermicelli", "reason": "Semolina-based, no artificial flavours, cleaner ingredients", "where": "Available at D-Mart, Big Bazaar, grocery stores", "score": 7},
+    {"emoji": "🥣", "brand": "Homemade", "name": "Homemade Poha or Upma", "reason": "Zero preservatives, zero additives, full control over ingredients", "where": "Make at home in 10 minutes", "score": 9}
+  ],
+  "recommendations": ["string"]
+}
+
+Rules:
+- health_score: 1-10 integer, brutally honest
+- score_breakdown: exactly 4-6 items. impact is a decimal like +1.5 or -2.0. All impacts must sum to roughly (health_score - 10) to show how we arrived at the score from a baseline of 10. Show the math honestly.
+- score_color: red ≤3, orange 4-6, green ≥7
+- nutrients: 5 items, level 0-100
+- ingredients: 5-8 items
+- harmful_effects: 3-5 real effects
+- misleading_claims: at least 1
+- alternatives: exactly 3 REAL alternatives. CRITICAL RULES for alternatives:
+  * Always suggest REAL brand names available in India (e.g. Patanjali, Saffola, Yoga Bar, RiteBite, Monsoon Harvest, Slurrp Farm, True Elements, Millet Amma, B Natural, Paper Boat, etc.)
+  * Each must have: brand name, full product name, specific reason it is healthier (name the actual better/missing ingredients), where to buy it in India (D-Mart, Big Bazaar, Amazon, Blinkit, Swiggy Instamart, etc.), and a health score
+  * NEVER suggest generic things like "eat a salad" or "homemade food" as the only options — at least 2 of 3 must be real purchasable branded products
+  * The alternatives must be realistic substitutes — same meal occasion, similar taste profile
+- recommendations: 3-4 tips
+- personalized_insight: if allergies/conditions in profile match dangerous ingredients, FLAG IT clearly`;
+
+  try {
+    let messages;
+    if(inputMode==='photo' && uploadedBase64) {
+      messages = [{role:'user', content:[
+        {type:'image', source:{type:'base64', media_type:'image/jpeg', data:uploadedBase64}},
+        {type:'text', text:prompt}
+      ]}];
+    } else {
+      messages = [{role:'user', content:`Food item: "${foodName}"\n\n${prompt}`}];
+    }
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1800, messages})
+    });
+
+    const data = await resp.json();
+    const text = data.content.map(i => i.text||'').join('');
+    const result = JSON.parse(text.replace(/```json|```/g,'').trim());
+    lastResult = result;
+
+    // SAVE TO CACHE (text mode only)
+    if(inputMode==='text') {
+      cache[cacheKey] = result;
+      localStorage.setItem('ft_cache', JSON.stringify(cache));
+    }
+
+    // SAVE TO HISTORY
+    history.unshift({
+      food_name: result.food_name,
+      health_score: result.health_score,
+      score_color: result.score_color,
+      verdict: result.verdict,
+      date: new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),
+      full: result
+    });
+    if(history.length > 30) history = history.slice(0,30);
+    localStorage.setItem('ft_history', JSON.stringify(history));
+
+    stopLoading();
+    renderResults(result, false);
+
+  } catch(err) {
+    stopLoading();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('results').innerHTML = `
+      <div class="result-card" style="text-align:center;padding:40px">
+        <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
+        <div style="font-family:var(--font-display);font-size:1rem;margin-bottom:8px">Analysis failed</div>
+        <div style="color:var(--text2);font-size:.82rem">Check your connection and try again.</div>
+      </div>`;
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('analyze-btn').disabled = false;
+  }
+}
+
+// ── RENDER RESULTS ──────────────────────────────────
+function renderResults(r, fromCache) {
+  document.getElementById('loading').style.display = 'none';
+  lastResult = r;
+
+  const sc = r.score_color==='red'?'#e05252':r.score_color==='orange'?'#e07a30':'#4caf7d';
+  const circ = 2*Math.PI*36;
+  const dash = circ-(r.health_score/10)*circ;
+  const vBg = r.score_color==='red'?'rgba(224,82,82,.12)':r.score_color==='orange'?'rgba(224,122,48,.12)':'rgba(76,175,125,.12)';
+
+  // SCORE BREAKDOWN HTML
+  const breakdownHTML = (r.score_breakdown||[]).map(b => {
+    const isPos = b.impact > 0;
+    const col = isPos ? '#4caf7d' : '#e05252';
+    const barW = Math.min(Math.abs(b.impact) / 3 * 100, 100);
+    const sign = isPos ? '+' : '';
+    return `<div class="breakdown-item">
+      <span class="bi-icon">${b.icon}</span>
+      <span class="bi-label">${b.label}</span>
+      <div class="bi-bar-wrap"><div class="bi-bar-track"><div class="bi-bar-fill" style="width:${barW}%;background:${col}"></div></div></div>
+      <span class="bi-score" style="color:${col}">${sign}${b.impact}</span>
+    </div>`;
+  }).join('');
+
+  const totalImpact = (r.score_breakdown||[]).reduce((s,b) => s+b.impact, 0);
+  const baseScore = (r.health_score - totalImpact).toFixed(1);
+
+  const nutrientsHTML = (r.nutrients||[]).map(n => {
+    const col = n.status==='danger'?'#e05252':n.status==='warning'?'#e07a30':'#4caf7d';
+    const label = n.status==='danger'?'⚠ High':n.status==='warning'?'∼ Medium':'✓ Good';
+    return `<div class="nutrient-row">
+      <div class="nutrient-label"><span class="nutrient-name">${n.name}</span><span class="nutrient-status" style="color:${col}">${label}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${n.level}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+
+  const ingHTML = (r.ingredients||[]).map(i => {
+    const cls = i.risk==='danger'?'danger':i.risk==='warning'?'warning':'ok';
+    return `<span class="ing-pill ${cls}">${i.name}</span>`;
+  }).join('');
+
+  const harmsHTML = (r.harmful_effects||[]).map(h =>
+    `<div class="harm-item"><span class="harm-em">${h.icon}</span><div><div class="harm-title">${h.title}</div><div class="harm-desc">${h.description}</div></div></div>`
+  ).join('');
+
+  const liesHTML = (r.misleading_claims||[]).map(m =>
+    `<div class="lie-card"><div class="lie-claim">❝ ${m.claim} ❞</div><div class="lie-truth">✓ ${m.truth}</div></div>`
+  ).join('');
+
+  const altsHTML = (r.alternatives||[]).map(a => {
+    const scorecol = a.score >= 7 ? '#4caf7d' : a.score >= 5 ? '#e07a30' : '#e05252';
+    // support both old format (desc) and new format (reason + where)
+    const desc = a.reason || a.desc || '';
+    const where = a.where ? `<div style="font-size:.72rem;color:var(--text3);margin-top:3px">📍 ${a.where}</div>` : '';
+    const brandTag = a.brand ? `<span style="font-size:.68rem;padding:2px 7px;border-radius:10px;background:var(--gold-dim);color:var(--gold);margin-bottom:4px;display:inline-block">${a.brand}</span><br/>` : '';
+    return `<div class="alt-item">
+      <span class="alt-emoji">${a.emoji}</span>
+      <div class="alt-info">
+        ${brandTag}
+        <div class="alt-name">${a.name}</div>
+        <div class="alt-desc">${desc}</div>
+        ${where}
+      </div>
+      <div class="alt-score" style="background:${scorecol}18;color:${scorecol}">${a.score}/10</div>
+    </div>`;
+  }).join('');
+
+  const recsHTML = (r.recommendations||[]).map(rec =>
+    `<div class="rec-item"><span class="rec-dot">›</span><span>${rec}</span></div>`
+  ).join('');
+
+  const personalHTML = r.personalized_insight ? `
+    <div class="result-card fu d7">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(201,168,76,.1)">👤</div>
+        <div><div class="card-title">Personalized for you</div><div class="card-sub">Based on your health profile</div></div>
+      </div>
+      <div class="personal-box"><div class="personal-title">Your insight</div><div class="personal-text">${r.personalized_insight}</div></div>
+    </div>` : '';
+
+  const cacheBannerHTML = fromCache ? `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(76,175,125,.06);border:1px solid rgba(76,175,125,.15);border-radius:8px;margin-bottom:12px;font-size:.75rem;color:#5aba8a">
+      ✓ Cached result — consistent score guaranteed
+      <button onclick="forceRefresh();document.getElementById('analyze-btn').disabled=false;" style="margin-left:auto;background:none;border:none;color:var(--text3);font-size:.72rem;cursor:pointer;text-decoration:underline;font-family:var(--font-body)">Re-analyze</button>
+    </div>` : '';
+
+  document.getElementById('results').innerHTML = `
+    ${cacheBannerHTML}
+    <div class="result-header fu d1">
+      <div class="result-food-name">${r.food_name}</div>
+      <div class="result-summary">${r.summary}</div>
+      <div class="score-display">
+        <div class="score-ring-wrap">
+          <svg width="96" height="96" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r="36" fill="none" stroke="var(--surface3)" stroke-width="6"/>
+            <circle cx="48" cy="48" r="36" fill="none" stroke="${sc}" stroke-width="6"
+              stroke-dasharray="${circ}" stroke-dashoffset="${dash}" stroke-linecap="round"/>
+          </svg>
+          <div class="score-overlay">
+            <span class="score-big" style="color:${sc}">${r.health_score}</span>
+            <span class="score-denom">/10</span>
+          </div>
+        </div>
+        <div class="score-labels">
+          <span class="verdict-tag" style="background:${vBg};color:${sc}">${r.verdict}</span>
+          <div class="score-tip">Tap below to see how this score was calculated</div>
+        </div>
+      </div>
+      <!-- SCORE BREAKDOWN -->
+      <div class="breakdown-wrap">
+        <div class="breakdown-title">How we calculated this score</div>
+        <div class="breakdown-items">${breakdownHTML}</div>
+        <div class="breakdown-total">
+          <span>Starting from baseline 10</span>
+          <span>${r.health_score}/10 final score</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="share-bar fu d2">
+      <button class="share-btn" onclick="shareResult('copy')">📋 Copy</button>
+      <button class="share-btn" onclick="shareResult('whatsapp')">💬 WhatsApp</button>
+      <button class="share-btn" onclick="shareResult('twitter')">🐦 Tweet</button>
+    </div>
+
+    <div class="result-card fu d3">
+      <div class="card-header"><div class="card-icon" style="background:rgba(76,143,224,.1)">📊</div><div><div class="card-title">Nutrient breakdown</div></div></div>
+      ${nutrientsHTML}
+    </div>
+
+    <div class="result-card fu d4">
+      <div class="card-header"><div class="card-icon" style="background:rgba(201,168,76,.1)">🧪</div><div><div class="card-title">Key ingredients</div></div></div>
+      <div class="ing-grid">${ingHTML}</div>
+      <div class="legend-row"><span style="color:#e07070">● Harmful</span><span style="color:#e09060">● Caution</span><span style="color:#5aba8a">● Safe</span></div>
+    </div>
+
+    <div class="result-card fu d5">
+      <div class="card-header"><div class="card-icon" style="background:rgba(224,82,82,.1)">⚠️</div><div><div class="card-title">Health risks</div><div class="card-sub">What this does to your body</div></div></div>
+      ${harmsHTML}
+    </div>
+
+    <div class="result-card fu d6">
+      <div class="card-header"><div class="card-icon" style="background:rgba(224,82,82,.08)">🚨</div><div><div class="card-title">Misleading claims exposed</div><div class="card-sub">What brands say vs reality</div></div></div>
+      ${liesHTML}
+    </div>
+
+    <div class="result-card fu d7">
+      <div class="card-header"><div class="card-icon" style="background:rgba(76,175,125,.1)">🥗</div><div><div class="card-title">Healthier alternatives</div></div></div>
+      ${altsHTML}
+    </div>
+
+    ${personalHTML}
+
+    <div class="result-card fu d8">
+      <div class="card-header"><div class="card-icon" style="background:rgba(201,168,76,.1)">✅</div><div><div class="card-title">What you should do</div></div></div>
+      ${recsHTML}
+    </div>
+
+    <div class="disclaimer-box fu d9">
+      <span class="disclaimer-icon">ℹ️</span>
+      <div class="disclaimer-text">
+        <strong>AI analysis — for educational purposes only.</strong> Results are based on AI knowledge and may not reflect exact product formulations. Always verify with the product label. Not a substitute for medical advice. If you have a health condition, consult a doctor before making dietary changes.
+      </div>
+    </div>
+
+    <button class="btn-retry" onclick="resetAll()">↑ Analyze another food</button>
+  `;
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('analyze-btn').disabled = false;
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+
+// ── HISTORY ─────────────────────────────────────────
+function renderHistory() {
+  // WEEKLY SUMMARY
+  const summaryWrap = document.getElementById('weekly-summary-wrap');
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const weekItems = history.filter(h => h.full); // items with full data
+  const total = weekItems.length;
+
+  if(total > 0) {
+    const avgScore = (weekItems.reduce((s,h) => s+h.health_score, 0) / total).toFixed(1);
+    const worst = weekItems.reduce((a,b) => a.health_score < b.health_score ? a : b);
+    const best = weekItems.reduce((a,b) => a.health_score > b.health_score ? a : b);
+    const scoreCol = avgScore >= 7 ? '#4caf7d' : avgScore >= 4 ? '#e07a30' : '#e05252';
+    const insight = avgScore < 4
+      ? `⚠️ Your average food score is quite low. Most of what you've been eating is processed or high in sugar/sodium. Try replacing one item per day with a whole food.`
+      : avgScore < 6
+      ? `⚡ You're eating mostly processed foods. Your worst choice was ${worst.food_name} (${worst.health_score}/10). Small swaps can make a big difference.`
+      : `✅ Not bad! Your best choice this period was ${best.food_name} (${best.health_score}/10). Keep building on healthy habits.`;
+
+    summaryWrap.innerHTML = `
+      <div class="weekly-summary">
+        <div class="ws-title">Your Analysis Summary</div>
+        <div class="ws-stats">
+          <div class="ws-stat"><div class="wsn" style="color:${scoreCol}">${avgScore}</div><div class="wsl">Avg health score</div></div>
+          <div class="ws-stat"><div class="wsn">${total}</div><div class="wsl">Foods analyzed</div></div>
+          <div class="ws-stat"><div class="wsn" style="color:#e05252">${worst.health_score}</div><div class="wsl">Lowest score</div></div>
+        </div>
+        <div class="ws-insight">${insight}</div>
+      </div>`;
+  } else {
+    summaryWrap.innerHTML = '';
+  }
+
+  // HISTORY LIST — now clickable and shows full results
+  const el = document.getElementById('history-list');
+  if(!history.length) {
+    el.innerHTML = `<div class="history-empty">No analyses yet.<br/>Go analyze some food first! 🍱</div>`;
+    return;
+  }
+  el.innerHTML = history.map((h, idx) => {
+    const sc = h.score_color==='red'?'#e05252':h.score_color==='orange'?'#e07a30':'#4caf7d';
+    const vBg = h.score_color==='red'?'rgba(224,82,82,.12)':h.score_color==='orange'?'rgba(224,122,48,.12)':'rgba(76,175,125,.12)';
+    return `<div class="history-item" onclick="loadFromHistory(${idx})">
+      <div class="h-score" style="background:${vBg};color:${sc}">${h.health_score}</div>
+      <div class="h-info">
+        <div class="h-name">${h.food_name}</div>
+        <div class="h-meta">${h.date}</div>
+      </div>
+      <span class="h-verdict" style="background:${vBg};color:${sc}">${h.verdict}</span>
+      <span class="h-arrow">→</span>
+    </div>`;
+  }).join('');
+}
+
+// HISTORY CLICK — loads full saved result
+function loadFromHistory(idx) {
+  const item = history[idx];
+  if(!item.full) { showToast('Full data not available for this item'); return; }
+  goToApp();
+  setTimeout(() => {
+    document.getElementById('food-name-input').value = item.food_name;
+    renderResults(item.full, true);
+  }, 100);
+}
+
+// ── SHARE ────────────────────────────────────────────
+function shareResult(type) {
+  if(!lastResult) return;
+  const r = lastResult;
+  const text = `🍽️ FoodTruth Analysis\n\n${r.food_name} — ${r.health_score}/10 (${r.verdict})\n\n${r.summary}\n\n⚠️ AI analysis for educational purposes only.\nAnalyzed by FoodTruth`;
+  if(type==='copy') { navigator.clipboard.writeText(text); showToast('✓ Copied!'); }
+  else if(type==='whatsapp') window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+  else if(type==='twitter') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text.slice(0,240)),'_blank');
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── RESET ─────────────────────────────────────────────
+function resetAll() {
+  document.getElementById('food-name-input').value = '';
+  resetPhoto();
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('cache-badge').classList.remove('show');
+  lastResult = null;
+  forceRefreshNext = false;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── INIT ──────────────────────────────────────────────
+if(userProfile) document.getElementById('profile-btn').classList.add('active-btn');
+showPage('landing');
+</script>
+</body>
+</html>

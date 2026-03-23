@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hall of Shame — FoodTruth</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Special+Elite&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0800;
+  --paper: #111009;
+  --surface: #161410;
+  --surface2: #1e1b14;
+  --border: rgba(201,160,50,0.12);
+  --border2: rgba(201,160,50,0.25);
+  --gold: #c9a032;
+  --gold2: #e8c050;
+  --gold-dim: rgba(201,160,50,0.1);
+  --red: #cc2222;
+  --red2: #ff4444;
+  --red-dim: rgba(204,34,34,0.12);
+  --text: #e8e0cc;
+  --text2: #a09070;
+  --text3: #504830;
+  --font-display: 'Playfair Display', serif;
+  --font-type: 'Special Elite', monospace;
+  --font-body: 'DM Sans', sans-serif;
+  --r: 4px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* PAPER TEXTURE */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px),
+    repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(0,0,0,0.02) 2px,rgba(0,0,0,0.02) 4px);
+}
+
+/* VIGNETTE */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 40%,rgba(0,0,0,0.6) 100%);
+}
+
+.z{position:relative;z-index:2;}
+
+/* ── HEADER ── */
+.site-header{
+  text-align:center;
+  padding:48px 20px 32px;
+  border-bottom:1px solid var(--border2);
+  position:relative;
+  background:linear-gradient(180deg,rgba(201,160,50,0.04) 0%,transparent 100%);
+}
+
+.header-eyebrow{
+  font-family:var(--font-type);
+  font-size:0.72rem;
+  letter-spacing:4px;
+  color:var(--text3);
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+
+.wanted-stamp{
+  display:inline-block;
+  border:3px solid var(--red);
+  color:var(--red);
+  font-family:var(--font-display);
+  font-size:clamp(3rem,10vw,6rem);
+  font-weight:900;
+  font-style:italic;
+  letter-spacing:-2px;
+  padding:4px 24px;
+  transform:rotate(-2deg);
+  text-shadow:2px 2px 0 rgba(204,34,34,0.3);
+  box-shadow:inset 0 0 0 2px rgba(204,34,34,0.2);
+  margin-bottom:20px;
+  display:block;
+  width:fit-content;
+  margin:0 auto 20px;
+  animation:stampIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) both;
+}
+@keyframes stampIn{
+  from{transform:rotate(-2deg) scale(2);opacity:0;}
+  to{transform:rotate(-2deg) scale(1);opacity:1;}
+}
+
+.header-sub{
+  font-family:var(--font-type);
+  font-size:0.85rem;
+  color:var(--text2);
+  letter-spacing:1px;
+  margin-top:16px;
+  line-height:1.6;
+}
+
+.header-stats{
+  display:flex;justify-content:center;gap:32px;
+  margin-top:24px;flex-wrap:wrap;
+}
+.hstat{text-align:center;}
+.hstat-num{
+  font-family:var(--font-display);
+  font-size:1.8rem;font-weight:700;
+  color:var(--gold);line-height:1;
+}
+.hstat-label{
+  font-family:var(--font-type);
+  font-size:0.65rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);
+  margin-top:4px;
+}
+
+/* DIVIDER */
+.ornament{
+  text-align:center;padding:16px 0;
+  font-family:var(--font-type);font-size:0.8rem;
+  color:var(--border2);letter-spacing:8px;
+}
+
+/* ── NAV BAR ── */
+.nav-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,8,0,0.8);
+  backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:100;
+  gap:12px;flex-wrap:wrap;
+}
+.nav-logo{
+  font-family:var(--font-display);
+  font-size:1rem;color:var(--gold);
+  text-decoration:none;cursor:pointer;
+}
+.nav-logo em{font-style:normal;color:var(--text2);}
+.nav-actions{display:flex;gap:8px;}
+.btn-nav{
+  padding:8px 16px;border-radius:var(--r);
+  font-family:var(--font-type);font-size:0.75rem;
+  cursor:pointer;transition:all 0.2s;letter-spacing:1px;
+}
+.btn-nav-ghost{
+  background:none;border:1px solid var(--border2);
+  color:var(--text2);
+}
+.btn-nav-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.btn-nav-red{
+  background:var(--red);border:1px solid var(--red);
+  color:#fff;font-weight:500;
+}
+.btn-nav-red:hover{background:#aa1111;}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);
+  max-width:800px;margin:0 auto;
+  padding:0 20px;
+}
+.tab{
+  flex:1;padding:14px 8px;text-align:center;
+  font-family:var(--font-type);font-size:0.8rem;
+  letter-spacing:1px;color:var(--text3);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all 0.2s;
+}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* ── MAIN CONTENT ── */
+.content{max-width:900px;margin:0 auto;padding:32px 20px 80px;}
+
+/* SECTION HEADER */
+.section-head{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:24px;padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.section-icon{
+  width:36px;height:36px;border-radius:var(--r);
+  background:var(--red-dim);border:1px solid rgba(204,34,34,0.3);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+}
+.section-title{
+  font-family:var(--font-display);
+  font-size:1.1rem;font-weight:700;
+}
+.section-count{
+  margin-left:auto;font-family:var(--font-type);
+  font-size:0.72rem;color:var(--text3);letter-spacing:1px;
+}
+
+/* ── MUGSHOT GRID ── */
+.mugshot-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:16px;
+  margin-bottom:40px;
+}
+
+/* MUGSHOT CARD */
+.mugshot{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  overflow:hidden;
+  transition:all 0.25s;
+  position:relative;
+  cursor:pointer;
+}
+.mugshot:hover{
+  border-color:var(--red);
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(204,34,34,0.15);
+}
+
+/* CASE NUMBER TAPE */
+.case-tape{
+  background:var(--gold);
+  color:#0a0800;
+  font-family:var(--font-type);
+  font-size:0.65rem;letter-spacing:2px;
+  padding:4px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+/* MUGSHOT FACE */
+.mugshot-face{
+  background:var(--surface2);
+  padding:24px 20px 16px;
+  text-align:center;
+  position:relative;
+  border-bottom:1px solid var(--border);
+}
+
+/* HEIGHT LINES like a real mugshot */
+.height-lines{
+  position:absolute;left:0;right:0;top:0;bottom:0;
+  display:flex;flex-direction:column;justify-content:space-between;
+  pointer-events:none;
+}
+.height-line{
+  height:1px;background:rgba(201,160,50,0.06);
+  position:relative;
+}
+.height-line::before{
+  content:attr(data-h);position:absolute;left:6px;
+  font-family:var(--font-type);font-size:0.55rem;
+  color:rgba(201,160,50,0.25);top:-6px;
+}
+
+.product-icon{
+  font-size:3.5rem;margin-bottom:10px;
+  display:block;filter:grayscale(30%);
+}
+
+.score-badge{
+  position:absolute;top:12px;right:12px;
+  width:44px;height:44px;border-radius:50%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  border:2px solid;
+}
+.score-badge .sb-num{
+  font-family:var(--font-display);
+  font-size:1rem;font-weight:900;line-height:1;
+}
+.score-badge .sb-den{
+  font-size:0.5rem;opacity:0.6;
+}
+
+.product-name{
+  font-family:var(--font-display);
+  font-size:1rem;font-weight:700;
+  margin-bottom:2px;
+}
+.product-brand{
+  font-family:var(--font-type);
+  font-size:0.7rem;color:var(--text3);
+  letter-spacing:1px;text-transform:uppercase;
+}
+
+/* CHARGE SHEET */
+.charge-sheet{padding:14px 16px;}
+
+.charge{
+  display:flex;gap:8px;
+  padding:8px 0;
+  border-bottom:1px solid rgba(201,160,50,0.06);
+}
+.charge:last-child{border-bottom:none;}
+.charge-num{
+  font-family:var(--font-type);
+  font-size:0.65rem;color:var(--text3);
+  flex-shrink:0;padding-top:1px;
+  min-width:24px;
+}
+.charge-text{font-size:0.78rem;color:var(--text2);line-height:1.4;}
+.charge-text strong{color:var(--red2);font-weight:500;}
+
+/* VERDICT STRIP */
+.verdict-strip{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;
+  background:var(--red-dim);
+  border-top:1px solid rgba(204,34,34,0.2);
+}
+.verdict-label{
+  font-family:var(--font-type);
+  font-size:0.68rem;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--red2);
+}
+.share-mini{
+  background:none;border:1px solid rgba(204,34,34,0.3);
+  color:var(--red2);font-size:0.68rem;padding:4px 10px;
+  border-radius:var(--r);cursor:pointer;font-family:var(--font-type);
+  transition:all 0.15s;
+}
+.share-mini:hover{background:var(--red-dim);}
+
+/* ── SUBMIT FORM ── */
+.submit-section{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:24px;
+  margin-bottom:24px;
+}
+.submit-title{
+  font-family:var(--font-display);
+  font-size:1.1rem;font-weight:700;
+  margin-bottom:6px;
+}
+.submit-sub{
+  font-family:var(--font-type);
+  font-size:0.75rem;color:var(--text2);
+  letter-spacing:0.5px;margin-bottom:20px;line-height:1.5;
+}
+.submit-row{display:flex;gap:10px;}
+.submit-input{
+  flex:1;padding:13px 16px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  color:var(--text);font-family:var(--font-body);
+  font-size:0.9rem;outline:none;transition:border-color 0.2s;
+}
+.submit-input:focus{border-color:var(--gold);}
+.submit-input::placeholder{color:var(--text3);}
+.btn-submit{
+  padding:13px 20px;
+  background:var(--red);border:none;
+  border-radius:var(--r);
+  color:#fff;font-family:var(--font-type);
+  font-size:0.78rem;letter-spacing:1px;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.btn-submit:hover{background:#aa1111;}
+.btn-submit:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;}
+
+/* ANALYZING STATE */
+.analyzing-bar{
+  display:none;
+  align-items:center;gap:10px;
+  margin-top:12px;padding:10px 14px;
+  background:var(--gold-dim);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  font-family:var(--font-type);
+  font-size:0.75rem;color:var(--text2);
+  letter-spacing:1px;
+}
+.analyzing-bar.show{display:flex;}
+.analyzing-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--gold);
+  animation:pulse 1s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* EMPTY STATE */
+.empty-state{
+  text-align:center;padding:60px 20px;
+  border:1px dashed var(--border2);
+  border-radius:var(--r);
+}
+.empty-icon{font-size:3rem;margin-bottom:16px;display:block;filter:grayscale(50%);}
+.empty-title{
+  font-family:var(--font-display);
+  font-size:1rem;margin-bottom:8px;color:var(--text2);
+}
+.empty-sub{font-size:0.82rem;color:var(--text3);line-height:1.6;}
+
+/* ── LEADERBOARD (Most Lies) ── */
+.lies-list{display:flex;flex-direction:column;gap:10px;}
+.lie-entry{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px;
+  display:flex;gap:14px;
+  align-items:flex-start;
+  transition:border-color 0.2s;
+}
+.lie-entry:hover{border-color:var(--red);}
+.lie-rank{
+  font-family:var(--font-display);
+  font-size:1.4rem;font-weight:900;
+  color:var(--text3);flex-shrink:0;
+  width:32px;text-align:center;line-height:1;
+  padding-top:4px;
+}
+.lie-rank.top{color:var(--red);}
+.lie-body{flex:1;}
+.lie-product{
+  font-family:var(--font-display);
+  font-size:0.95rem;font-weight:700;
+  margin-bottom:6px;
+}
+.lie-claim-box{
+  background:rgba(204,34,34,0.06);
+  border-left:2px solid var(--red);
+  padding:8px 12px;border-radius:0 var(--r) var(--r) 0;
+  margin-bottom:6px;
+}
+.lie-claim-label{
+  font-family:var(--font-type);
+  font-size:0.62rem;letter-spacing:1.5px;
+  color:var(--red2);text-transform:uppercase;margin-bottom:3px;
+}
+.lie-claim-text{font-size:0.8rem;color:var(--text2);font-style:italic;}
+.lie-truth-text{font-size:0.78rem;color:var(--text3);line-height:1.4;}
+.lie-score-pill{
+  flex-shrink:0;
+  font-family:var(--font-display);
+  font-size:0.85rem;font-weight:700;
+  padding:4px 10px;border-radius:20px;
+}
+
+/* ── GLOBAL SHARE ── */
+.share-wall{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:24px;
+  text-align:center;
+  margin-top:32px;
+}
+.share-wall-title{
+  font-family:var(--font-display);
+  font-size:1.1rem;font-style:italic;
+  margin-bottom:8px;
+}
+.share-wall-sub{
+  font-family:var(--font-type);
+  font-size:0.75rem;color:var(--text2);
+  letter-spacing:0.5px;margin-bottom:20px;
+}
+.share-wall-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-share-wall{
+  padding:11px 20px;border-radius:var(--r);
+  font-family:var(--font-type);font-size:0.75rem;
+  letter-spacing:1px;cursor:pointer;transition:all 0.2s;
+}
+.btn-share-wall-wa{background:#25D366;border:none;color:#fff;}
+.btn-share-wall-wa:hover{background:#1abe55;}
+.btn-share-wall-tw{background:none;border:1px solid var(--border2);color:var(--text2);}
+.btn-share-wall-tw:hover{border-color:var(--gold);color:var(--gold);}
+.btn-share-wall-cp{background:none;border:1px solid var(--border2);color:var(--text2);}
+.btn-share-wall-cp:hover{border-color:var(--gold);color:var(--gold);}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--surface);border:1px solid var(--border2);
+  color:var(--text);font-size:0.82rem;
+  padding:10px 20px;border-radius:20px;
+  transition:transform 0.3s;z-index:9999;
+  white-space:nowrap;font-family:var(--font-type);
+  letter-spacing:1px;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* LOADING OVERLAY */
+.loading-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(10,8,0,0.9);
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;
+}
+.loading-overlay.show{display:flex;}
+.loading-skull{font-size:3rem;animation:shake 0.5s ease-in-out infinite alternate;}
+@keyframes shake{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+.loading-msg{
+  font-family:var(--font-type);font-size:0.9rem;
+  color:var(--gold);letter-spacing:2px;text-align:center;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp 0.4s ease forwards;}
+
+@media(max-width:480px){
+  .submit-row{flex-direction:column;}
+  .mugshot-grid{grid-template-columns:1fr;}
+  .header-stats{gap:20px;}
+  .wanted-stamp{font-size:3rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-skull">💀</div>
+  <div class="loading-msg" id="loading-msg">BUILDING THE CASE…</div>
+</div>
+
+<!-- NAV -->
+<div class="z">
+  <nav class="nav-bar">
+    <div class="nav-logo" onclick="window.location.href='food-truth-v4-fixed.html'">
+      Food<em>Truth</em> <span style="color:var(--text3);font-size:0.7rem;font-family:var(--font-type)">/ Hall of Shame</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-nav btn-nav-ghost" onclick="shareWall()">Share Wall</button>
+      <button class="btn-nav btn-nav-red" onclick="scrollToSubmit()">+ Expose a Brand</button>
+    </div>
+  </nav>
+</div>
+
+<!-- HEADER -->
+<div class="z">
+  <div class="site-header">
+    <div class="header-eyebrow">FoodTruth Presents</div>
+    <div class="wanted-stamp">HALL OF SHAME</div>
+    <div class="header-sub">
+      These brands got caught. Their crimes: misleading millions of Indians.<br/>
+      Evidence collected by AI. Verdict: Guilty.
+    </div>
+    <div class="header-stats">
+      <div class="hstat">
+        <div class="hstat-num" id="stat-total">0</div>
+        <div class="hstat-label">Brands Exposed</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num" id="stat-avg">—</div>
+        <div class="hstat-label">Avg Health Score</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num" id="stat-lies">0</div>
+        <div class="hstat-label">Lies Exposed</div>
+      </div>
+    </div>
+  </div>
+  <div class="ornament z">— ✦ —</div>
+</div>
+
+<!-- TABS -->
+<div class="z">
+  <div class="tabs">
+    <div class="tab active" id="tab-worst" onclick="switchTab('worst')">☠ Worst Offenders</div>
+    <div class="tab" id="tab-lies" onclick="switchTab('lies')">🚨 Most Misleading</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="z content">
+
+  <!-- SUBMIT FORM -->
+  <div class="submit-section" id="submit-section">
+    <div class="submit-title">Know a guilty brand?</div>
+    <div class="submit-sub">Type any Indian packaged food product. We'll analyze it and add it to the wall if it deserves to be here.</div>
+    <div class="submit-row">
+      <input class="submit-input" id="submit-input" type="text"
+        placeholder="e.g. Bournvita, Maggi, Frooti, Kurkure…"
+        onkeydown="if(event.key==='Enter')submitProduct()"/>
+      <button class="btn-submit" id="submit-btn" onclick="submitProduct()">EXPOSE IT</button>
+    </div>
+    <div class="analyzing-bar" id="analyzing-bar">
+      <div class="analyzing-dot"></div>
+      <span id="analyzing-text">Building the case against this product…</span>
+    </div>
+  </div>
+
+  <!-- WORST OFFENDERS TAB -->
+  <div id="panel-worst">
+    <div class="section-head">
+      <div class="section-icon">☠️</div>
+      <div>
+        <div class="section-title">Most Dangerous Products</div>
+      </div>
+      <div class="section-count" id="worst-count">0 CONVICTED</div>
+    </div>
+    <div class="mugshot-grid" id="mugshot-grid"></div>
+  </div>
+
+  <!-- MOST MISLEADING TAB -->
+  <div id="panel-lies" style="display:none">
+    <div class="section-head">
+      <div class="section-icon">🚨</div>
+      <div>
+        <div class="section-title">Biggest Liars</div>
+      </div>
+      <div class="section-count" id="lies-count">0 CAUGHT LYING</div>
+    </div>
+    <div class="lies-list" id="lies-list"></div>
+  </div>
+
+  <!-- SHARE WALL -->
+  <div class="share-wall">
+    <div class="share-wall-title">"People deserve to know what they're eating."</div>
+    <div class="share-wall-sub">Share this wall. Make it go viral. Force brands to be honest.</div>
+    <div class="share-wall-btns">
+      <button class="btn-share-wall btn-share-wall-wa" onclick="shareWall('whatsapp')">💬 Share on WhatsApp</button>
+      <button class="btn-share-wall btn-share-wall-tw" onclick="shareWall('twitter')">🐦 Tweet This</button>
+      <button class="btn-share-wall btn-share-wall-cp" onclick="shareWall('copy')">📋 Copy Link</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ───────────────────────────────────────────
+// shameData = array of full analysis results saved here
+let shameData = JSON.parse(localStorage.getItem('ft_shame') || '[]');
+let currentTab = 'worst';
+
+const analyzingMessages = [
+  'BUILDING THE CASE…',
+  'READING THE INGREDIENTS…',
+  'CHECKING FOR LIES…',
+  'CALCULATING THE DAMAGE…',
+  'VERDICT INCOMING…'
+];
+let msgInterval;
+
+// FOOD EMOJI MAP — gives each product a visual identity
+const foodEmojis = {
+  'maggi': '🍜', 'noodle': '🍜', 'pasta': '🍝',
+  'bournvita': '🍫', 'horlicks': '🥛', 'complan': '🥛',
+  'rooh afza': '🧃', 'frooti': '🧃', 'appy': '🍎',
+  'kurkure': '🌽', 'lays': '🥔', 'chips': '🥔',
+  'oreo': '🍪', 'biscuit': '🍪', 'cookie': '🍪',
+  'dairy milk': '🍫', 'kitkat': '🍫', 'chocolate': '🍫',
+  'red bull': '⚡', 'monster': '⚡', 'energy': '⚡',
+  'pepsi': '🥤', 'cola': '🥤', 'coke': '🥤',
+  'juice': '🧃', 'drink': '🥤',
+  'bread': '🍞', 'cake': '🎂',
+  'default': '🏭'
+};
+
+function getFoodEmoji(name) {
+  const lower = name.toLowerCase();
+  for(const [key, emoji] of Object.entries(foodEmojis)) {
+    if(lower.includes(key)) return emoji;
+  }
+  return foodEmojis.default;
+}
+
+// FOOD NAME EXPANDER (same as main app)
+const foodNameMap = {
+  'maggi':'Maggi 2-Minute Instant Noodles',
+  'bournvita':'Cadbury Bournvita chocolate malt drink powder',
+  'horlicks':'Horlicks malted milk health drink',
+  'rooh afza':'Rooh Afza concentrated sharbat drink by Hamdard',
+  'frooti':'Frooti mango fruit drink by Parle Agro',
+  'kurkure':'Kurkure Masala Munch corn snack',
+  'lays':'Lays Classic Salted Potato Chips',
+  'oreo':'Oreo chocolate sandwich biscuits',
+  'dairy milk':'Cadbury Dairy Milk chocolate bar',
+  'kitkat':'KitKat chocolate wafer bar',
+  'parle-g':'Parle-G glucose biscuits',
+  'parle g':'Parle-G glucose biscuits',
+  'red bull':'Red Bull energy drink',
+  'pepsi':'Pepsi Cola carbonated soft drink',
+  'complan':'Complan health drink for children',
+  'appy':'Appy Fizz apple sparkling drink',
+  'thums up':'Thums Up carbonated cola drink',
+  'sprite':'Sprite lemon-lime carbonated soft drink',
+};
+
+function expandName(name) {
+  const lower = name.toLowerCase().trim();
+  if(foodNameMap[lower]) return foodNameMap[lower];
+  if(lower.length < 10) return `${name} Indian packaged food product`;
+  return name;
+}
+
+// ── TABS ────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('panel-worst').style.display = tab === 'worst' ? 'block' : 'none';
+  document.getElementById('panel-lies').style.display  = tab === 'lies'  ? 'block' : 'none';
+}
+
+// ── SUBMIT ──────────────────────────────────────────
+function scrollToSubmit() {
+  document.getElementById('submit-section').scrollIntoView({behavior:'smooth'});
+  setTimeout(() => document.getElementById('submit-input').focus(), 500);
+}
+
+async function submitProduct() {
+  const raw = document.getElementById('submit-input').value.trim();
+  if(!raw) return;
+
+  // Strict duplicate check — catches "Maggi" vs "Maggi 2-Minute Noodles"
+  const rawLower = raw.toLowerCase().trim();
+  const rawFirstWord = rawLower.split(' ')[0];
+  const already = shameData.find(d => {
+    const ex = d.food_name.toLowerCase();
+    const exFirst = ex.split(' ')[0];
+    return ex.includes(rawLower) || rawLower.includes(exFirst) || exFirst === rawFirstWord;
+  });
+  if(already) { showToast('⚠️ ' + already.food_name + ' is already convicted!'); return; }
+
+  const foodName = expandName(raw);
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('analyzing-bar').classList.add('show');
+
+  let mi = 0;
+  document.getElementById('analyzing-text').textContent = analyzingMessages[0];
+  msgInterval = setInterval(() => {
+    mi = (mi+1) % analyzingMessages.length;
+    document.getElementById('analyzing-text').textContent = analyzingMessages[mi];
+  }, 1200);
+
+  document.getElementById('loading-overlay').classList.add('show');
+  document.getElementById('loading-msg').textContent = analyzingMessages[0];
+
+  const prompt = `You are FoodTruth — brutally honest food analyst exposing dangerous Indian food products.
+
+Analyze "${foodName}" and respond ONLY with valid JSON, no markdown, no backticks.
+
+{
+  "food_name": "Exact product name",
+  "brand": "Brand/company name",
+  "health_score": 3,
+  "score_color": "red",
+  "verdict": "GUILTY",
+  "crime_summary": "One dramatic sentence describing the worst thing about this product",
+  "charges": [
+    "Contains 45g sugar per 100g — more than cola",
+    "Artificial colour Sunset Yellow linked to hyperactivity in children",
+    "Claims to be healthy but 3rd ingredient is refined sugar"
+  ],
+  "misleading_claims": [
+    {"claim": "Exact quote from brand marketing", "truth": "The real truth about this claim with numbers"}
+  ],
+  "worst_ingredient": "The single most harmful ingredient and why",
+  "sugar_per_100g": 45,
+  "additives_count": 6,
+  "nutrients": [
+    {"name": "Sugar", "level": 85, "status": "danger"},
+    {"name": "Protein", "level": 15, "status": "ok"},
+    {"name": "Fibre", "level": 5, "status": "warning"},
+    {"name": "Fat", "level": 40, "status": "warning"},
+    {"name": "Sodium", "level": 65, "status": "danger"}
+  ]
+}
+
+Rules:
+- health_score: 1-10, be brutally honest. Hall of Shame products should score 1-5
+- charges: exactly 3 specific, factual charges with numbers where possible
+- misleading_claims: exactly 2, with real brand marketing claims vs truth
+- crime_summary: dramatic but factual, one sentence
+- Be specific, name actual ingredients and numbers`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1200,
+        messages:[{role:'user', content:`Analyze this food product for the Hall of Shame: "${foodName}"\n\n${prompt}`}]
+      })
+    });
+
+    const data = await resp.json();
+    const text = data.content.map(i => i.text||'').join('');
+    const result = JSON.parse(text.replace(/```json|```/g,'').trim());
+    result.submitted_by = 'Community';
+    result.date = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    result.emoji = getFoodEmoji(raw);
+
+    // Only add if score is 6 or below — hall of shame criteria
+    if(result.health_score <= 6) {
+      shameData.unshift(result);
+      localStorage.setItem('ft_shame', JSON.stringify(shameData));
+      clearInterval(msgInterval);
+      document.getElementById('loading-overlay').classList.remove('show');
+      document.getElementById('analyzing-bar').classList.remove('show');
+      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('submit-input').value = '';
+      renderAll();
+      showToast('🚨 ' + result.food_name + ' has been added to the Hall of Shame!');
+    } else {
+      clearInterval(msgInterval);
+      document.getElementById('loading-overlay').classList.remove('show');
+      document.getElementById('analyzing-bar').classList.remove('show');
+      document.getElementById('submit-btn').disabled = false;
+      showToast('✓ Score: ' + result.health_score + '/10 — Too healthy for the Hall of Shame!');
+    }
+
+  } catch(err) {
+    clearInterval(msgInterval);
+    document.getElementById('loading-overlay').classList.remove('show');
+    document.getElementById('analyzing-bar').classList.remove('show');
+    document.getElementById('submit-btn').disabled = false;
+    showToast('Analysis failed. Try again.');
+  }
+}
+
+// ── RENDER ALL ──────────────────────────────────────
+function renderAll() {
+  renderStats();
+  renderMugshots();
+  renderLies();
+}
+
+function renderStats() {
+  const total = shameData.length;
+  const avg = total > 0
+    ? (shameData.reduce((s,d) => s+d.health_score, 0) / total).toFixed(1)
+    : '—';
+  const totalLies = shameData.reduce((s,d) => s+(d.misleading_claims||[]).length, 0);
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-avg').textContent = avg;
+  document.getElementById('stat-lies').textContent = totalLies;
+}
+
+// MUGSHOT CARDS
+function renderMugshots() {
+  // Sort by health score ascending (worst first)
+  const sorted = [...shameData].sort((a,b) => a.health_score - b.health_score);
+  document.getElementById('worst-count').textContent = sorted.length + ' CONVICTED';
+
+  const grid = document.getElementById('mugshot-grid');
+
+  if(sorted.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <span class="empty-icon">🏛️</span>
+        <div class="empty-title">The Hall of Shame is empty</div>
+        <div class="empty-sub">Submit a guilty brand above.<br/>Every brand you expose helps someone make a better choice.</div>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = sorted.map((d, idx) => {
+    const sc = d.score_color==='red'?'#cc2222':d.score_color==='orange'?'#cc6600':'#2a7a2a';
+    const caseNum = 'FT-' + String(idx+1).padStart(3,'0') + '-' + d.date.replace(/ /g,'-').toUpperCase();
+    const chargesHTML = (d.charges||[]).map((c,i) =>
+      `<div class="charge">
+        <div class="charge-num">§${i+1}</div>
+        <div class="charge-text">${c.replace(/\b(sugar|artificial|harmful|dangerous|misleading|false|lie)\b/gi, '<strong>$1</strong>')}</div>
+      </div>`
+    ).join('');
+
+    // Height lines for mugshot effect
+    const heightLines = [6,5,4,3,2,1].map(h =>
+      `<div class="height-line" data-h="${h}ft"></div>`
+    ).join('');
+
+    return `<div class="mugshot fade-in" onclick="shareMugshot(${idx})">
+      <div class="case-tape">
+        <span>${caseNum}</span>
+        <span>${d.date}</span>
+      </div>
+      <div class="mugshot-face">
+        <div class="height-lines">${heightLines}</div>
+        <div class="score-badge" style="border-color:${sc};background:${sc}18">
+          <span class="sb-num" style="color:${sc}">${d.health_score}</span>
+          <span class="sb-den" style="color:${sc}">/10</span>
+        </div>
+        <span class="product-icon">${d.emoji||'🏭'}</span>
+        <div class="product-name">${d.food_name}</div>
+        <div class="product-brand">${d.brand||''}</div>
+      </div>
+      <div class="charge-sheet">
+        <div style="font-family:var(--font-type);font-size:0.65rem;letter-spacing:2px;color:var(--text3);margin-bottom:8px;text-transform:uppercase">Charges Filed</div>
+        ${chargesHTML}
+      </div>
+      <div class="verdict-strip">
+        <span class="verdict-label">⚖️ ${d.verdict||'GUILTY'}</span>
+        <button class="share-mini" onclick="event.stopPropagation();shareMugshot(${idx})">Share →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// LIES LEADERBOARD
+function renderLies() {
+  // GROUP by product — one entry per product, all its lies shown together
+  // This fixes the "Bournvita appearing twice" bug
+  const grouped = [];
+  shameData.forEach(d => {
+    const claims = d.misleading_claims || [];
+    if(claims.length === 0) return;
+    grouped.push({
+      food_name: d.food_name,
+      health_score: d.health_score,
+      score_color: d.score_color,
+      emoji: d.emoji || '🏭',
+      claims: claims  // ALL claims for this product, shown together
+    });
+  });
+
+  // Sort by most claims first, then by worst score
+  grouped.sort((a,b) => b.claims.length - a.claims.length || a.health_score - b.health_score);
+
+  const totalLies = grouped.reduce((s,g) => s + g.claims.length, 0);
+  document.getElementById('lies-count').textContent = totalLies + ' LIES CAUGHT';
+  const el = document.getElementById('lies-list');
+
+  if(grouped.length === 0) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <span class="empty-icon">🤥</span>
+        <div class="empty-title">No lies recorded yet</div>
+        <div class="empty-sub">Submit a brand above to expose their misleading claims.</div>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = grouped.map((g, idx) => {
+    const sc = g.score_color==='red'?'#cc2222':g.score_color==='orange'?'#cc6600':'#2a7a2a';
+    const isTop = idx < 3;
+
+    // Render ALL claims for this product stacked
+    const claimsHTML = g.claims.map((lie, ci) => `
+      <div class="lie-claim-box" style="margin-bottom:${ci < g.claims.length-1 ? '8px' : '0'}">
+        <div class="lie-claim-label">Lie ${g.claims.length > 1 ? ci+1 : ''} — What they say</div>
+        <div class="lie-claim-text">❝ ${lie.claim} ❞</div>
+        <div class="lie-truth-text" style="margin-top:5px">✓ ${lie.truth}</div>
+      </div>`).join('');
+
+    const liesBadge = g.claims.length > 1
+      ? `<span style="font-family:var(--font-type);font-size:0.62rem;letter-spacing:1px;background:var(--red-dim);color:var(--red2);padding:2px 8px;border-radius:4px;margin-left:8px">${g.claims.length} LIES</span>`
+      : '';
+
+    return `<div class="lie-entry fade-in">
+      <div class="lie-rank ${isTop?'top':''}">${idx+1}</div>
+      <div class="lie-body">
+        <div class="lie-product">
+          ${g.emoji} ${g.food_name}${liesBadge}
+        </div>
+        ${claimsHTML}
+      </div>
+      <div class="lie-score-pill" style="background:${sc}18;color:${sc}">${g.health_score}/10</div>
+    </div>`;
+  }).join('');
+}
+
+// ── SHARE ────────────────────────────────────────────
+function shareMugshot(idx) {
+  const sorted = [...shameData].sort((a,b) => a.health_score - b.health_score);
+  const d = sorted[idx];
+  if(!d) return;
+  const text = `🚨 EXPOSED on FoodTruth Hall of Shame\n\n${d.food_name} — Health Score: ${d.health_score}/10\n\n${d.crime_summary}\n\nCharges:\n${(d.charges||[]).map((c,i)=>`${i+1}. ${c}`).join('\n')}\n\n⚠️ AI analysis for educational purposes.`;
+  navigator.clipboard.writeText(text);
+  showToast('📋 Mugshot copied! Paste anywhere to share.');
+}
+
+function shareWall(type) {
+  const total = shameData.length;
+  const text = `🏛️ FoodTruth Hall of Shame\n\n${total} Indian food brands exposed for misleading consumers.\nWorst offender: ${shameData.length > 0 ? shameData.sort((a,b)=>a.health_score-b.health_score)[0].food_name + ' (' + shameData[0].health_score + '/10)' : 'Submit one!'}\n\nKnow what you eat. Share to protect others.`;
+
+  if(type === 'whatsapp') window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+  else if(type === 'twitter') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text.slice(0,240)),'_blank');
+  else { navigator.clipboard.writeText(text); showToast('✓ Copied to clipboard!'); }
+}
+
+// ── SEED DATA — preloaded shame entries ─────────────
+// These are pre-analyzed products to show the wall isn't empty on first visit
+const seedData = [
+  {
+    food_name:"Rooh Afza Sharbat",brand:"Hamdard",health_score:2,score_color:"red",
+    verdict:"GUILTY",emoji:"🧃",
+    date:"1 Jan 2025",
+    crime_summary:"Markets itself as a 'natural health drink' while containing over 60% sugar as its primary ingredient.",
+    charges:[
+      "Contains 60g+ sugar per 100ml — more than any cola drink on the market",
+      "Brand recommends 3 servings per day which equals 180g sugar daily — 6x the WHO limit",
+      "Labelled as 'natural' despite containing artificial food colours Red 40 and Carmoisine"
+    ],
+    misleading_claims:[
+      {claim:"Consume 3 times daily for health and refreshment",truth:"3 servings = 180g sugar daily. WHO recommends max 25g/day. This recommendation alone could cause diabetes."},
+      {claim:"Made with natural herbs and ingredients",truth:"Primary ingredient is refined sugar. Artificial colours and preservatives are present. 'Natural herbs' are trace amounts."}
+    ],
+    worst_ingredient:"Refined Sugar (60%+ of product)",
+    sugar_per_100g:62,additives_count:5,
+    nutrients:[
+      {name:"Sugar",level:95,status:"danger"},{name:"Protein",level:2,status:"ok"},
+      {name:"Fibre",level:0,status:"danger"},{name:"Fat",level:5,status:"ok"},
+      {name:"Sodium",level:20,status:"ok"}
+    ]
+  },
+  {
+    food_name:"Bournvita",brand:"Cadbury (Mondelēz)",health_score:3,score_color:"red",
+    verdict:"GUILTY",emoji:"🍫",
+    date:"2 Jan 2025",
+    crime_summary:"Sold to Indian parents as a child health drink while containing more sugar than most chocolates.",
+    charges:[
+      "Contains 37g sugar per 100g — the very first ingredient listed is liquid glucose",
+      "Claims to build immunity with Vitamin D but you'd need 14 servings a day to meet daily Vitamin D needs",
+      "Marketed specifically to children despite containing levels of sugar that cause childhood obesity"
+    ],
+    misleading_claims:[
+      {claim:"Helps build stronger bones and immunity in growing children",truth:"The primary ingredient is liquid glucose. A child drinking 2 cups daily consumes 22g sugar — nearly the entire daily limit — from this drink alone."},
+      {claim:"Contains essential vitamins and minerals",truth:"Vitamins are present in such small quantities that meaningful nutrition requires consuming dangerous amounts of sugar to get them."}
+    ],
+    worst_ingredient:"Liquid Glucose (primary ingredient)",
+    sugar_per_100g:37,additives_count:8,
+    nutrients:[
+      {name:"Sugar",level:88,status:"danger"},{name:"Protein",level:30,status:"warning"},
+      {name:"Fibre",level:8,status:"warning"},{name:"Fat",level:35,status:"warning"},
+      {name:"Sodium",level:45,status:"warning"}
+    ]
+  },
+  {
+    food_name:"Maggi 2-Minute Noodles",brand:"Nestlé",health_score:4,score_color:"red",
+    verdict:"GUILTY",emoji:"🍜",
+    date:"3 Jan 2025",
+    crime_summary:"Ultra-processed instant noodles marketed as a quick meal, hiding alarming sodium and refined carb content.",
+    charges:[
+      "Contains 1000mg+ sodium per serving — 44% of an adult's entire daily sodium limit in one meal",
+      "Made from 100% refined maida (white flour) with zero nutritional fibre — causes rapid blood sugar spikes",
+      "Tastemaker contains MSG and multiple artificial flavour enhancers not disclosed prominently"
+    ],
+    misleading_claims:[
+      {claim:"2-minute mein khushiyan — a wholesome family meal",truth:"A single serving provides 44% of daily sodium. Regular consumption is directly linked to hypertension and kidney problems, especially in children."},
+      {claim:"Contains iron and protein for growing children",truth:"Iron content meets just 10% of daily needs. Protein is low quality. The harm from sodium and refined carbs far outweighs these minimal benefits."}
+    ],
+    worst_ingredient:"Refined Maida + MSG combination",
+    sugar_per_100g:4,additives_count:12,
+    nutrients:[
+      {name:"Sugar",level:25,status:"warning"},{name:"Protein",level:30,status:"warning"},
+      {name:"Fibre",level:5,status:"danger"},{name:"Fat",level:55,status:"danger"},
+      {name:"Sodium",level:90,status:"danger"}
+    ]
+  }
+];
+
+// Load seed data — deduplicates against anything already saved
+function initSeedData() {
+  if(shameData.length === 0) {
+    shameData = seedData;
+    localStorage.setItem('ft_shame', JSON.stringify(shameData));
+    return;
+  }
+  // Already has data — only add seeds not already present
+  // Prevents duplicates when user submitted a seed product manually
+  let changed = false;
+  seedData.forEach(seed => {
+    const seedFirst = seed.food_name.toLowerCase().split(' ')[0];
+    const exists = shameData.find(d => {
+      const ex = d.food_name.toLowerCase();
+      return ex.split(' ')[0] === seedFirst || ex.includes(seedFirst);
+    });
+    if(!exists) { shameData.push(seed); changed = true; }
+  });
+  if(changed) localStorage.setItem('ft_shame', JSON.stringify(shameData));
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── INIT ──────────────────────────────────────────────
+// Auto-deduplicate on load — removes any duplicates already in storage
+function deduplicateStorage() {
+  const seen = {};
+  shameData = shameData.filter(d => {
+    const key = d.food_name.toLowerCase().split(' ')[0];
+    if(seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+  localStorage.setItem('ft_shame', JSON.stringify(shameData));
+}
+
+deduplicateStorage();
+initSeedData();
+renderAll();
+</script>
+</body>
+</html>
