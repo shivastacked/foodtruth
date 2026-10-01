@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: FoodTruth Backend
+
+  # MySQL datasource and JPA will be enabled when the database is provisioned.
+  # DataSourceAutoConfiguration and HibernateJpaAutoConfiguration are excluded
+  # in FoodTruthApplication.java until database features are implemented.
+
+server:
+  port: 8080
