@@ -8,3 +8,12 @@ spring:
 
 server:
   port: 8080
+
+# Anthropic API configuration — the key is read from the ANTHROPIC_API_KEY
+# environment variable and never exposed to the frontend.
+anthropic:
+  api-key: ${ANTHROPIC_API_KEY:}
+  api-url: https://api.anthropic.com/v1/messages
+  api-version: 2023-06-01
+  model: claude-sonnet-4-20250514
+  max-tokens: 1800

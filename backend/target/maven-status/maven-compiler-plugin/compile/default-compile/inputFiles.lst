@@ -1,7 +1,15 @@
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/FoodTruthApplication.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/config/AnthropicConfig.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/config/AppConfig.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/config/CorsConfig.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/controller/FoodAnalysisController.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/controller/GlobalExceptionHandler.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/controller/HealthController.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/dto/AnalyzeRequest.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/dto/AnalyzeResponse.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/dto/ErrorResponse.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/dto/package-info.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/entity/package-info.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/repository/package-info.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/FoodAnalysisService.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/package-info.java
