@@ -2,6 +2,7 @@
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/config/AnthropicConfig.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/config/AppConfig.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/config/CorsConfig.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/config/GeminiConfig.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/controller/FoodAnalysisController.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/controller/GlobalExceptionHandler.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/controller/HealthController.java
@@ -14,4 +15,5 @@
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/AIProvider.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/AnthropicAIProvider.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/FoodAnalysisService.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/GeminiAIProvider.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/package-info.java

@@ -3,13 +3,12 @@ package com.foodtruth.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foodtruth.backend.config.AnthropicConfig;
+import com.foodtruth.backend.config.GeminiConfig;
 import com.foodtruth.backend.dto.AnalyzeRequest;
 import com.foodtruth.backend.dto.AnalyzeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -20,59 +19,65 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Anthropic implementation of {@link AIProvider}.
- * Calls the Anthropic Messages API with the FoodTruth prompt structure.
+ * Gemini implementation of {@link AIProvider}.
+ * Calls the Gemini generateContent REST API with the FoodTruth prompt structure.
  * The API key is read from server-side configuration and never sent to the client.
  */
-@Primary
 @Component
-public class AnthropicAIProvider implements AIProvider {
+public class GeminiAIProvider implements AIProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(AnthropicAIProvider.class);
+    private static final Logger log = LoggerFactory.getLogger(GeminiAIProvider.class);
 
-    private final AnthropicConfig anthropicConfig;
+    private final GeminiConfig geminiConfig;
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
 
-    public AnthropicAIProvider(AnthropicConfig anthropicConfig,
-                               RestClient restClient,
-                               ObjectMapper objectMapper) {
-        this.anthropicConfig = anthropicConfig;
+    public GeminiAIProvider(GeminiConfig geminiConfig,
+                            RestClient restClient,
+                            ObjectMapper objectMapper) {
+        this.geminiConfig = geminiConfig;
         this.restClient = restClient;
         this.objectMapper = objectMapper;
     }
 
     @Override
     public boolean isConfigured() {
-        return anthropicConfig.isConfigured();
+        return geminiConfig.isConfigured();
     }
 
     @Override
     public AnalyzeResponse analyze(AnalyzeRequest request) {
-        if (!anthropicConfig.isConfigured()) {
+        if (!geminiConfig.isConfigured()) {
             throw new IllegalStateException(
-                "Anthropic API key is not configured. Set the ANTHROPIC_API_KEY environment variable.");
+                "Gemini API key is not configured. Set the GEMINI_API_KEY environment variable.");
         }
 
         String prompt = buildPrompt(request);
         Map<String, Object> requestBody = buildRequestBody(request, prompt);
+        String endpoint = buildEndpointUrl();
 
         String rawResponse;
         try {
             rawResponse = restClient.post()
-                    .uri(anthropicConfig.getApiUrl())
-                    .header("x-api-key", anthropicConfig.getApiKey())
-                    .header("anthropic-version", anthropicConfig.getApiVersion())
+                    .uri(endpoint)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(requestBody)
                     .retrieve()
                     .body(String.class);
         } catch (RestClientException e) {
-            log.error("Anthropic API call failed", e);
+            log.error("Gemini API call failed", e);
             throw new RuntimeException("Failed to reach the AI analysis service. Please try again.", e);
         }
 
         return parseResponse(rawResponse);
+    }
+
+    private String buildEndpointUrl() {
+        String base = geminiConfig.getApiUrl();
+        if (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+        return base + "/models/" + geminiConfig.getModel() + ":generateContent?key=" + geminiConfig.getApiKey();
     }
 
     private String buildPrompt(AnalyzeRequest request) {
@@ -148,31 +153,37 @@ public class AnthropicAIProvider implements AIProvider {
     }
 
     private Map<String, Object> buildRequestBody(AnalyzeRequest request, String prompt) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("model", anthropicConfig.getModel());
-        body.put("max_tokens", anthropicConfig.getMaxTokens());
+        List<Map<String, Object>> parts = new ArrayList<>();
 
         if (request.hasImage()) {
-            List<Map<String, Object>> content = new ArrayList<>();
-            Map<String, Object> imageBlock = new HashMap<>();
-            imageBlock.put("type", "image");
-            Map<String, Object> source = new HashMap<>();
-            source.put("type", "base64");
-            source.put("media_type", request.getImageMediaType() != null ? request.getImageMediaType() : "image/jpeg");
-            source.put("data", request.getImageBase64());
-            imageBlock.put("source", source);
-            content.add(imageBlock);
-
-            Map<String, Object> textBlock = new HashMap<>();
-            textBlock.put("type", "text");
-            textBlock.put("text", prompt);
-            content.add(textBlock);
-
-            body.put("messages", List.of(Map.of("role", "user", "content", content)));
-        } else {
-            String userText = "Food item: \"" + request.getFoodName() + "\"\n\n" + prompt;
-            body.put("messages", List.of(Map.of("role", "user", "content", userText)));
+            Map<String, Object> imagePart = new HashMap<>();
+            imagePart.put("text", "");
+            Map<String, Object> inlineData = new HashMap<>();
+            inlineData.put("mimeType", request.getImageMediaType() != null ? request.getImageMediaType() : "image/jpeg");
+            inlineData.put("data", request.getImageBase64());
+            imagePart.put("inlineData", inlineData);
+            parts.add(imagePart);
         }
+
+        String userText = request.hasImage()
+                ? prompt
+                : "Food item: \"" + request.getFoodName() + "\"\n\n" + prompt;
+
+        Map<String, Object> textPart = new HashMap<>();
+        textPart.put("text", userText);
+        parts.add(textPart);
+
+        Map<String, Object> content = new HashMap<>();
+        content.put("role", "user");
+        content.put("parts", parts);
+
+        Map<String, Object> generationConfig = new HashMap<>();
+        generationConfig.put("maxOutputTokens", geminiConfig.getMaxOutputTokens());
+        generationConfig.put("temperature", geminiConfig.getTemperature());
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("contents", List.of(content));
+        body.put("generationConfig", generationConfig);
 
         return body;
     }
@@ -180,24 +191,34 @@ public class AnthropicAIProvider implements AIProvider {
     private AnalyzeResponse parseResponse(String rawResponse) {
         try {
             JsonNode root = objectMapper.readTree(rawResponse);
-            JsonNode contentArray = root.path("content");
-            if (contentArray.isMissingNode() || !contentArray.isArray() || contentArray.isEmpty()) {
+            JsonNode candidates = root.path("candidates");
+            if (candidates.isMissingNode() || !candidates.isArray() || candidates.isEmpty()) {
+                throw new RuntimeException("AI returned an empty response.");
+            }
+
+            JsonNode parts = candidates.get(0).path("content").path("parts");
+            if (parts.isMissingNode() || !parts.isArray() || parts.isEmpty()) {
                 throw new RuntimeException("AI returned an empty response.");
             }
 
             StringBuilder textBuilder = new StringBuilder();
-            for (JsonNode item : contentArray) {
-                if ("text".equals(item.path("type").asText())) {
-                    textBuilder.append(item.path("text").asText());
+            for (JsonNode part : parts) {
+                JsonNode textNode = part.path("text");
+                if (!textNode.isMissingNode()) {
+                    textBuilder.append(textNode.asText());
                 }
             }
 
             String text = textBuilder.toString().trim();
+            if (text.isEmpty()) {
+                throw new RuntimeException("AI returned an empty response.");
+            }
+
             text = text.replaceAll("```json", "").replaceAll("```", "").trim();
 
             return objectMapper.readValue(text, AnalyzeResponse.class);
         } catch (JsonProcessingException e) {
-            log.error("Failed to parse AI response as JSON", e);
+            log.error("Failed to parse Gemini response as JSON", e);
             throw new RuntimeException("The AI returned an invalid response. Please try again.", e);
         }
     }

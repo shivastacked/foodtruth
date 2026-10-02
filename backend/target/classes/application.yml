@@ -17,3 +17,12 @@ anthropic:
   api-version: 2023-06-01
   model: claude-sonnet-4-20250514
   max-tokens: 1800
+
+# Gemini API configuration — the key is read from the GEMINI_API_KEY
+# environment variable and never exposed to the frontend.
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  api-url: https://generativelanguage.googleapis.com/v1beta
+  model: gemini-2.0-flash
+  max-output-tokens: 1800
+  temperature: 0.7

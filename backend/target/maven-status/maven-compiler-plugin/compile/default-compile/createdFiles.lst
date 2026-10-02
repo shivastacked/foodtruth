@@ -13,6 +13,7 @@ com/foodtruth/backend/FoodTruthApplication.class
 com/foodtruth/backend/dto/AnalyzeResponse$Ingredient.class
 com/foodtruth/backend/service/AIProvider.class
 com/foodtruth/backend/controller/HealthController.class
+com/foodtruth/backend/config/GeminiConfig.class
 com/foodtruth/backend/entity/package-info.class
 com/foodtruth/backend/dto/AnalyzeRequest.class
 com/foodtruth/backend/service/package-info.class
@@ -21,4 +22,5 @@ com/foodtruth/backend/dto/AnalyzeResponse.class
 com/foodtruth/backend/dto/AnalyzeResponse$HarmfulEffect.class
 com/foodtruth/backend/dto/AnalyzeResponse$ScoreBreakdownItem.class
 com/foodtruth/backend/repository/package-info.class
+com/foodtruth/backend/service/GeminiAIProvider.class
 com/foodtruth/backend/dto/AnalyzeResponse$MisleadingClaim.class
