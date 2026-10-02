@@ -9,6 +9,11 @@ spring:
 server:
   port: 8080
 
+# AI provider selection — determines which implementation is registered
+# as the active AIProvider bean. Supported values: anthropic, gemini.
+ai:
+  provider: anthropic
+
 # Anthropic API configuration — the key is read from the ANTHROPIC_API_KEY
 # environment variable and never exposed to the frontend.
 anthropic:

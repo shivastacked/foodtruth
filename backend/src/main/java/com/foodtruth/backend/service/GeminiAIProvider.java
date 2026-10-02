@@ -9,7 +9,6 @@ import com.foodtruth.backend.dto.AnalyzeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
@@ -22,8 +21,8 @@ import java.util.Map;
  * Gemini implementation of {@link AIProvider}.
  * Calls the Gemini generateContent REST API with the FoodTruth prompt structure.
  * The API key is read from server-side configuration and never sent to the client.
+ * Bean creation is controlled by {@link AIProviderConfig} based on the ai.provider property.
  */
-@Component
 public class GeminiAIProvider implements AIProvider {
 
     private static final Logger log = LoggerFactory.getLogger(GeminiAIProvider.class);

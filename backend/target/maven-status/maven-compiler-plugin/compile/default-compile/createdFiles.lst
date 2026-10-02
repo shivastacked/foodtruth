@@ -18,6 +18,7 @@ com/foodtruth/backend/entity/package-info.class
 com/foodtruth/backend/dto/AnalyzeRequest.class
 com/foodtruth/backend/service/package-info.class
 com/foodtruth/backend/config/AppConfig.class
+com/foodtruth/backend/service/AIProviderConfig.class
 com/foodtruth/backend/dto/AnalyzeResponse.class
 com/foodtruth/backend/dto/AnalyzeResponse$HarmfulEffect.class
 com/foodtruth/backend/dto/AnalyzeResponse$ScoreBreakdownItem.class

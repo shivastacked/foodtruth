@@ -26,7 +26,7 @@ public class FoodAnalysisService {
     public AnalyzeResponse analyze(AnalyzeRequest request) {
         if (!aiProvider.isConfigured()) {
             throw new IllegalStateException(
-                "AI provider is not configured. Set the ANTHROPIC_API_KEY environment variable.");
+                "The configured AI provider is not ready. Set the appropriate API key environment variable.");
         }
         return aiProvider.analyze(request);
     }
