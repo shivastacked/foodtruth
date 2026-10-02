@@ -11,5 +11,7 @@
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/dto/package-info.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/entity/package-info.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/repository/package-info.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/AIProvider.java
+/tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/AnthropicAIProvider.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/FoodAnalysisService.java
 /tmp/cc-agent/71644921/project/backend/src/main/java/com/foodtruth/backend/service/package-info.java
