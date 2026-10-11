@@ -1,6 +1,7 @@
 package com.foodtruth.backend.dto;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 /**
  * Response body for POST /api/analyze.
@@ -8,17 +9,29 @@ import java.util.List;
  */
 public class AnalyzeResponse {
 
+    @JsonAlias("food_name")
     private String foodName;
+    @JsonAlias("health_score")
     private int healthScore;
+    @JsonAlias("score_color")
     private String scoreColor;
+    @JsonAlias("verdict")
     private String verdict;
+    @JsonAlias("summary")
     private String summary;
+    @JsonAlias("score_breakdown")
     private List<ScoreBreakdownItem> scoreBreakdown;
+    @JsonAlias("personalized_insight")
     private String personalizedInsight;
+    @JsonAlias("nutrients")
     private List<Nutrient> nutrients;
+    @JsonAlias("ingredients")
     private List<Ingredient> ingredients;
+    @JsonAlias("harmful_effects")
     private List<HarmfulEffect> harmfulEffects;
+    @JsonAlias("misleading_claims")
     private List<MisleadingClaim> misleadingClaims;
+
     private List<Alternative> alternatives;
     private List<String> recommendations;
 

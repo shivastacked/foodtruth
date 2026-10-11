@@ -1,6 +1,10 @@
 package com.foodtruth.backend.controller;
 
 import com.foodtruth.backend.dto.ErrorResponse;
+import com.foodtruth.backend.exception.AnalysisNotFoundException;
+import com.foodtruth.backend.exception.FoodProductNotFoundException;
+import com.foodtruth.backend.exception.IngredientAlreadyExistsException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,6 +35,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("validation_error", "Request validation failed", errors));
     }
+    @ExceptionHandler(IngredientAlreadyExistsException.class)
+      public ResponseEntity<ErrorResponse> handleIngredientAlreadyExists(
+        IngredientAlreadyExistsException ex) {
+
+    ErrorResponse response = new ErrorResponse(
+            "ingredient_already_exists",
+            ex.getMessage(),
+            null
+    );
+
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+}
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
@@ -38,4 +54,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("internal_error", "An unexpected error occurred."));
     }
+    @ExceptionHandler(FoodProductNotFoundException.class)
+public ResponseEntity<ErrorResponse> handleFoodProductNotFound(
+        FoodProductNotFoundException ex) {
+
+    ErrorResponse response = new ErrorResponse(
+            "product_not_found",
+            ex.getMessage(),
+            null
+    );
+
+    return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(response);
+}
+@ExceptionHandler(AnalysisNotFoundException.class)
+public ResponseEntity<ErrorResponse> handleAnalysisNotFound(
+        AnalysisNotFoundException ex) {
+
+    ErrorResponse response = new ErrorResponse(
+            "analysis_not_found",
+            ex.getMessage(),
+            null
+    );
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+}
 }
