@@ -657,86 +657,42 @@ async function analyzeFood() {
   forceRefreshNext = false;
   startLoading();
 
-  const profileStr = userProfile
-    ? `User profile: Age ${userProfile.age}, Gender ${userProfile.gender}, Weight ${userProfile.weight}kg, Goal: ${userProfile.goal}, Conditions/Allergies: ${(userProfile.allergies||[]).join(', ')||'none'}.`
-    : 'No user profile.';
-
-  const prompt = `You are FoodTruth — brutally honest food health analyst. ${profileStr}
-
-Respond ONLY with valid JSON, no markdown, no backticks, no extra text.
-
-{
-  "food_name": "string",
-  "health_score": 5,
-  "score_color": "orange",
-  "verdict": "string",
-  "summary": "One sentence honest summary",
-  "score_breakdown": [
-    {"icon": "🍬", "label": "High sugar content", "impact": -2.5, "type": "negative"},
-    {"icon": "🎨", "label": "Artificial colours", "impact": -1.0, "type": "negative"},
-    {"icon": "🌾", "label": "Some dietary fibre", "impact": +0.5, "type": "positive"},
-    {"icon": "⚗️", "label": "Preservatives present", "impact": -1.0, "type": "negative"},
-    {"icon": "🧂", "label": "High sodium", "impact": -1.0, "type": "negative"}
-  ],
-  "personalized_insight": "string — specific to user profile, or general tip if no profile",
-  "nutrients": [
-    {"name": "Sugar", "level": 85, "status": "danger"},
-    {"name": "Protein", "level": 20, "status": "ok"},
-    {"name": "Fibre", "level": 10, "status": "warning"},
-    {"name": "Fat", "level": 45, "status": "warning"},
-    {"name": "Sodium", "level": 60, "status": "warning"}
-  ],
-  "ingredients": [{"name": "string", "risk": "danger"}],
-  "harmful_effects": [{"icon": "🩸", "title": "string", "description": "string"}],
-  "misleading_claims": [{"claim": "string", "truth": "string"}],
-  "alternatives": [
-    {"emoji": "🍜", "brand": "Patanjali", "name": "Patanjali Atta Noodles", "reason": "Made with whole wheat atta, lower maida content, no MSG", "where": "Available at Patanjali stores and most kirana shops", "score": 6},
-    {"emoji": "🌾", "brand": "Bambino", "name": "Bambino Vermicelli", "reason": "Semolina-based, no artificial flavours, cleaner ingredients", "where": "Available at D-Mart, Big Bazaar, grocery stores", "score": 7},
-    {"emoji": "🥣", "brand": "Homemade", "name": "Homemade Poha or Upma", "reason": "Zero preservatives, zero additives, full control over ingredients", "where": "Make at home in 10 minutes", "score": 9}
-  ],
-  "recommendations": ["string"]
-}
-
-Rules:
-- health_score: 1-10 integer, brutally honest
-- score_breakdown: exactly 4-6 items. impact is a decimal like +1.5 or -2.0. All impacts must sum to roughly (health_score - 10) to show how we arrived at the score from a baseline of 10. Show the math honestly.
-- score_color: red ≤3, orange 4-6, green ≥7
-- nutrients: 5 items, level 0-100
-- ingredients: 5-8 items
-- harmful_effects: 3-5 real effects
-- misleading_claims: at least 1
-- alternatives: exactly 3 REAL alternatives. CRITICAL RULES for alternatives:
-  * Always suggest REAL brand names available in India (e.g. Patanjali, Saffola, Yoga Bar, RiteBite, Monsoon Harvest, Slurrp Farm, True Elements, Millet Amma, B Natural, Paper Boat, etc.)
-  * Each must have: brand name, full product name, specific reason it is healthier (name the actual better/missing ingredients), where to buy it in India (D-Mart, Big Bazaar, Amazon, Blinkit, Swiggy Instamart, etc.), and a health score
-  * NEVER suggest generic things like "eat a salad" or "homemade food" as the only options — at least 2 of 3 must be real purchasable branded products
-  * The alternatives must be realistic substitutes — same meal occasion, similar taste profile
-- recommendations: 3-4 tips
-- personalized_insight: if allergies/conditions in profile match dangerous ingredients, FLAG IT clearly`;
-
   try {
-    let messages;
-    if(inputMode==='photo' && uploadedBase64) {
-      messages = [{role:'user', content:[
-        {type:'image', source:{type:'base64', media_type:'image/jpeg', data:uploadedBase64}},
-        {type:'text', text:prompt}
-      ]}];
-    } else {
-      messages = [{role:'user', content:`Food item: "${foodName}"\n\n${prompt}`}];
+    const reqBody = { foodName: foodName };
+    if (userProfile) {
+      reqBody.profile = {
+        age: userProfile.age || null,
+        gender: userProfile.gender || null,
+        weight: userProfile.weight || null,
+        goal: userProfile.goal || null,
+        allergies: userProfile.allergies || []
+      };
+    }
+    if (inputMode === 'photo' && uploadedBase64) {
+      reqBody.imageBase64 = uploadedBase64;
+      reqBody.imageMediaType = 'image/jpeg';
     }
 
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1800, messages})
+    const resp = await fetch('http://localhost:8080/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reqBody)
     });
 
-    const data = await resp.json();
-    const text = data.content.map(i => i.text||'').join('');
-    const result = JSON.parse(text.replace(/```json|```/g,'').trim());
+    if (!resp.ok) {
+      let errMsg = `The analysis service returned an error (HTTP ${resp.status}).`;
+      try {
+        const errBody = await resp.json();
+        if (errBody.message) errMsg = errBody.message;
+      } catch (_) {}
+      throw new Error(errMsg);
+    }
+
+    const result = normalizeResponse(await resp.json());
     lastResult = result;
 
     // SAVE TO CACHE (text mode only)
-    if(inputMode==='text') {
+    if (inputMode === 'text') {
       cache[cacheKey] = result;
       localStorage.setItem('ft_cache', JSON.stringify(cache));
     }
@@ -747,27 +703,53 @@ Rules:
       health_score: result.health_score,
       score_color: result.score_color,
       verdict: result.verdict,
-      date: new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),
+      date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
       full: result
     });
-    if(history.length > 30) history = history.slice(0,30);
+    if (history.length > 30) history = history.slice(0, 30);
     localStorage.setItem('ft_history', JSON.stringify(history));
 
     stopLoading();
     renderResults(result, false);
 
-  } catch(err) {
+  } catch (err) {
     stopLoading();
     document.getElementById('loading').style.display = 'none';
+    const isNetwork = err instanceof TypeError && err.message.includes('Failed to fetch');
+    const msg = isNetwork
+      ? 'Cannot reach the FoodTruth analysis service. Is the backend running on localhost:8080?'
+      : (err.message || 'Check your connection and try again.');
     document.getElementById('results').innerHTML = `
       <div class="result-card" style="text-align:center;padding:40px">
         <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
         <div style="font-family:var(--font-display);font-size:1rem;margin-bottom:8px">Analysis failed</div>
-        <div style="color:var(--text2);font-size:.82rem">Check your connection and try again.</div>
+        <div style="color:var(--text2);font-size:.82rem">${msg}</div>
       </div>`;
     document.getElementById('results').style.display = 'block';
     document.getElementById('analyze-btn').disabled = false;
   }
+}
+
+// ── NORMALIZE BACKEND RESPONSE ─────────────────────
+// Maps the backend's camelCase JSON to the snake_case
+// properties expected by renderResults().
+function normalizeResponse(r) {
+  if (!r) return r;
+  return {
+    food_name: r.foodName ?? r.food_name,
+    health_score: r.healthScore ?? r.health_score,
+    score_color: r.scoreColor ?? r.score_color,
+    verdict: r.verdict,
+    summary: r.summary,
+    score_breakdown: r.scoreBreakdown ?? r.score_breakdown,
+    personalized_insight: r.personalizedInsight ?? r.personalized_insight,
+    nutrients: r.nutrients,
+    ingredients: r.ingredients,
+    harmful_effects: r.harmfulEffects ?? r.harmful_effects,
+    misleading_claims: r.misleadingClaims ?? r.misleading_claims,
+    alternatives: r.alternatives,
+    recommendations: r.recommendations
+  };
 }
 
 // ── RENDER RESULTS ──────────────────────────────────
