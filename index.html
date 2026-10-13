@@ -643,10 +643,9 @@ function expandFoodName(name) {
 // ── ANALYZE ─────────────────────────────────────────
 async function analyzeFood() {
   const rawInput = document.getElementById('food-name-input').value.trim();
-  const foodName = expandFoodName(rawInput); // expanded for AI clarity
-  const cacheKey = rawInput.toLowerCase();  // cache by what user typed
+  const foodName = expandFoodName(rawInput);
+  const cacheKey = rawInput.toLowerCase();
 
-  // CHECK CACHE FIRST (skip if photo mode or force refresh)
   if(inputMode==='text' && !forceRefreshNext && cache[cacheKey]) {
     renderResults(cache[cacheKey], true);
     return;
@@ -694,13 +693,11 @@ async function analyzeFood() {
     const result = normalizeResponse(await resp.json());
     lastResult = result;
 
-    // SAVE TO CACHE (text mode only)
     if (inputMode === 'text') {
       cache[cacheKey] = result;
       localStorage.setItem('ft_cache', JSON.stringify(cache));
     }
 
-    // SAVE TO HISTORY
     history.unshift({
       food_name: result.food_name,
       health_score: result.health_score,
